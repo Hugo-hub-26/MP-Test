@@ -55,6 +55,9 @@ public class Lycanthrope extends GameCharacter {
     }
 
     public void setRage(int rage) {
+        if(rage>3){
+            this.rage=3;
+        }
         this.rage = rage;
     }
     
