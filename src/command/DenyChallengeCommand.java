@@ -46,9 +46,6 @@ public class DenyChallengeCommand implements Command{
 
 		mediator.denyChallenge(challenge, admin);
 		System.out.println("Desafío rechazado.\n");
-		challenge.getDefiedPlayer().setGold(challenge.getDefiedPlayer().getGold() - (int) 0.1*challenge.getBetGold());
-		challenge.getDefyingPlayer().setGold(challenge.getDefyingPlayer().getGold()- (int) 0.1*challenge.getBetGold());
-				
 
 		context.setNextMode(new MenuMode(new MenuScreen(context),
 				context, authManager, userManager, mediator));

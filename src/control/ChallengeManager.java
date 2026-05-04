@@ -5,6 +5,8 @@
 package control;
 
 import domain.Challenge;
+import static domain.ChallengeState.PENDING_PLAYER_RESPONSE;
+import domain.Player;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -60,5 +62,15 @@ public class ChallengeManager {
 		challenges.add(challenge);
 		save(); 
 	}
+
+	
+	public boolean hasPendingChallenge(Player player) {
+    return challenges.stream()
+        .anyMatch(c ->
+            c.getDefiedPlayer().equals(player) &&
+            c.getState() == PENDING_PLAYER_RESPONSE
+        );
+	}
+
 
 }

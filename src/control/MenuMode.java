@@ -16,6 +16,7 @@ import command.UnregisterCharacterCommand;
 import command.UnregisterCommand;
 import command.ValidateChallengeCommand;
 import domain.Administrator;
+import domain.Challenge;
 import domain.ChallengeMediator;
 import domain.Player;
 import interaction.Screen;
@@ -87,6 +88,14 @@ public class MenuMode implements Mode{
 	@Override
 	public Mode doAction(char option) {
 		Command command = commands.get(option);
+
+		if (context.getCurrentUser() instanceof Player player &&
+		    challengeMediator.hasPendingChallenge(player)) {
+
+		    Challenge c = challengeMediator.challengesForPlayer(player).get(0);
+		    context.setNextMode(new RestrictedChallengeMode(context, userManager, challengeMediator, c, authManager));
+    return context.getNextMode();
+}
 
 		if (command == null) {
 			throw new IllegalStateException(

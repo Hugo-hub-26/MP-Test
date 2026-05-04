@@ -62,6 +62,10 @@ b) Rechazar
             String input = context.getScanner().nextLine().trim().toLowerCase();
             if (input.isEmpty()) continue;
             char c = input.charAt(0);
+			if (player.getGameCharacter() == null) {
+			    System.out.println("No puedes aceptar un desafío sin personaje.");
+    			return;
+			}
 
             if (c == 'a') {
                 ch.acceptByPlayer();
@@ -73,6 +77,15 @@ b) Rechazar
 			if (c == 'b') {
                 ch.rejectByPlayer();
                 System.out.println("Desafío rechazado.\n");
+				int penalty = (int) (0.1 * ch.getBetGold());
+
+        		Player defied = ch.getDefiedPlayer();
+        		Player defying = ch.getDefyingPlayer();
+
+		        defied.setGold(Math.max(0, defied.getGold() - penalty));
+		        defying.setGold(Math.max(0, defying.getGold() - penalty));
+
+		        userManager.save(); // persistimos el cambio de oro
                 return;
             }
 

@@ -45,6 +45,13 @@ public class ApproveChallengeCommand implements Command{
 			return;
 		}
 
+		if (challenge.getDefyingPlayer().getGameCharacter() == null ||
+    		challenge.getDefiedPlayer().getGameCharacter() == null) {
+    		System.out.println("Desafío inválido: jugador sin personaje.");
+    		challenge.denyByAdmin(admin);
+    		return;
+		}
+
 		int combatType = 1;
 
 		System.out.println("""

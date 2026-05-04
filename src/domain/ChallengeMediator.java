@@ -19,6 +19,8 @@ public class ChallengeMediator {
 		this.challengeManager = challengeManager;
 	}
 
+	
+
 	public void registerChallenge(Challenge challenge) {
 		challengeManager.addChallenge(challenge);
 	}
@@ -48,5 +50,9 @@ public class ChallengeMediator {
 				== ChallengeState.PENDING_PLAYER_RESPONSE)
 				.toList();
 	}
-	
+
+	public boolean hasPendingChallenge(Player player) {
+    	return challengeManager.hasPendingChallenge(player);
+	}
+
 }
