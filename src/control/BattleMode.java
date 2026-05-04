@@ -82,9 +82,10 @@ public class BattleMode implements Mode {
 	
 private void resolveCombat() {
 
-        // Los getters que has usado en tu Challenge son estos:
         Player p1 = challenge.getDefyingPlayer();
         Player p2 = challenge.getDefiedPlayer();
+		p1.markChallengeTime();
+		p2.markChallengeTime();
         int bet = challenge.getBetGold();
 
         screen.clearLog();

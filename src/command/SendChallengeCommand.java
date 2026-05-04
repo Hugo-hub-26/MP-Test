@@ -31,7 +31,7 @@ public class SendChallengeCommand implements Command{
 	public void execute() {
 		
 		if (!(context.getCurrentUser() instanceof Player defying)) {
-            System.out.println("Solo un jugador puede lanzar desafíos.\n");
+            System.out.println("Solo un jugador puede lanzar desafios.\n");
             return;
         }
 
@@ -44,20 +44,26 @@ public class SendChallengeCommand implements Command{
 		try {
             bet = Integer.parseInt(context.getScanner().nextLine().trim());
         } catch (NumberFormatException e) {
-            System.out.println("Cantidad inválida.\n");
+            System.out.println("Cantidad invalida.\n");
             return;
         }
 
         if (bet <= 0 || bet > defying.getGold()) {
-            System.out.println("Apuesta inválida (debe ser >0 y <= tu oro).\n");
+            System.out.println("Apuesta invalida (debe ser >0 y <= tu oro).\n");
             return;
         }
 
         User u = userManager.findByNick(rivalNick);
-        if (!(u instanceof Player defied)) {
+        if (!(u instanceof Player)) {
             System.out.println("El jugador rival no existe.\n");
             return;
         }
+
+		Player defied = (Player) u;
+		if (!defied.canBeChallenged()) {
+			System.out.println("No se puede desafiar a este jugador: ha participado en un desafío en las últimas 24 horas.\n");
+		    return;
+		}
 		
 		Challenge ch = new Challenge(defying, defied, bet); // estado PENDING_ADMIN_VALIDATION
         mediator.registerChallenge(ch);
