@@ -1,6 +1,8 @@
 # MP-PracticaImplementacion
 Repositorio para el trabajo de MP.
 
+Se trata de un videojuego de fantasía en el que los jugadores pueden combatir y ganar oro a través de sus personajes.
+
 ## Tecnología
 - Java JDK 21
 - Apache Ant
@@ -46,3 +48,5 @@ El análisis de calidad se ejecuta contra una instancia local de SonarQube.
 Las credenciales de acceso (token) no se almacenan en el repositorio y se
 gestionan externamente.
 
+## Interacción
+El programa pide entradas de teclado.
