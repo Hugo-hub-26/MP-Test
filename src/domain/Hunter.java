@@ -14,6 +14,9 @@ public class Hunter extends GameCharacter {
     }
 
     public void setAttitude(int attitude) {
+        if (attitude<0){
+            this.attitude = 0;            
+        } 
         this.attitude = attitude;
     }
     
