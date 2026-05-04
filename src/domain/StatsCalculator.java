@@ -6,6 +6,8 @@ public class StatsCalculator {
 	private int type;
     private final Algorithm DamageStrategy ;
     private final  Algorithm DefenseStrategy;
+    private int rounds=0;
+    private boolean minionsAlive=false;
     
 	public StatsCalculator(int type){
     	this.DamageStrategy= new DamageAlgorithm(type);
@@ -37,24 +39,31 @@ public class StatsCalculator {
     int     dmg2;
     int     def1;
     int     def2;
+    int     rounds=0;
+    boolean survivalminioms;
     while (win==false){
         atk1=0;
         atk2=0;
         if (stats1[0]<=0 && stats2[0]<=0){
             win=true;
             g.setDraw(true);
+
         }
         else if (stats1[0]<=0){
             win=true;
             winner=g.getCharacter2();
             looser=g.getCharacter1();
             g.setDraw(false);
+            this.rounds=rounds;
+            this.minionsAlive=(stats2[1]>0);
         }
         else if (stats2[0]<=0){
             win=true;
             winner=g.getCharacter1();
             looser=g.getCharacter2();
-            g.setDraw(false);  
+            g.setDraw(false); 
+            this.rounds=rounds;
+            this.minionsAlive=(stats1[1]>0); 
         } else {
         dmg1= calculatedamage(g.getCharacter1());
         dmg2= calculatedamage(g.getCharacter2());
@@ -79,6 +88,12 @@ public class StatsCalculator {
             System.out.println(g.getCharacter1().getName()+ " ha asestado un golpe");
             System.out.println(g.getCharacter2().getName()+ " tiene "+
             stats2[0]+ "puntos de vida");
+            if (g.getCharacter2() instanceof Lycanthrope){
+                ((Lycanthrope) g.getCharacter2()).setRage(((Lycanthrope) g.getCharacter2()).getRage() + 3);
+            }
+            if (g.getCharacter2() instanceof Hunter){
+                ((Hunter)g.getCharacter2()).setAttitude(((Hunter)g.getCharacter2()).getAttitude() - 1);
+            }
         }  
          else {
             stats2[1]-=1;
@@ -89,9 +104,6 @@ public class StatsCalculator {
     if (g.getCharacter1() instanceof Vampire){
         ((Vampire) g.getCharacter1()).setBloodPoints(((Vampire) g.getCharacter1()).getBloodPoints()+4);
     }
-    if (g.getCharacter2() instanceof Lycanthrope){
-        ((Lycanthrope) g.getCharacter2()).setRage(((Lycanthrope) g.getCharacter2()).getRage() + 3);
-    }
     }
     if (atk2>def1){
         if (stats1[1]<=0){
@@ -99,6 +111,12 @@ public class StatsCalculator {
             System.out.println(g.getCharacter2().getName() + " ha asestado un golpe");
             System.out.println(g.getCharacter1().getName()+ " tiene "+
             stats1[0]+ "puntos de vida");
+            if (g.getCharacter1() instanceof Lycanthrope){
+                ((Lycanthrope) g.getCharacter1()).setRage(((Lycanthrope) g.getCharacter1()).getRage() + 3);
+            }
+            if (g.getCharacter2() instanceof Hunter){
+                ((Hunter)g.getCharacter2()).setAttitude(((Hunter)g.getCharacter2()).getAttitude() - 1);
+            }
         }  
         
          else {
@@ -110,11 +128,9 @@ public class StatsCalculator {
          if (g.getCharacter2() instanceof Vampire){
             ((Vampire) g.getCharacter2()).setBloodPoints(((Vampire) g.getCharacter2()).getBloodPoints()+4);
         }
-        if (g.getCharacter1() instanceof Lycanthrope){
-            ((Lycanthrope) g.getCharacter1()).setRage(((Lycanthrope) g.getCharacter1()).getRage() + 3);
         }
         }
-        }
+    rounds+=1;
     }
     if (g.getCharacter1() instanceof Lycanthrope){
         ((Lycanthrope) g.getCharacter1()).setRage(0);
@@ -131,9 +147,7 @@ public class StatsCalculator {
     g.setCharacter1(winner);
     g.setCharacter2(looser);
     return g; 
+
     } 
-    
+
 }
-
-
-
