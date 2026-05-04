@@ -13,6 +13,7 @@ import domain.Gift;
 import domain.HunterEditCharacter;
 import domain.Player;
 import domain.Strength;
+import domain.User;
 import domain.Weakness;
 import domain.Weapons;
 import domain.Will;
@@ -69,6 +70,8 @@ public class EditCharacterCommand implements Command{
                     System.out.println("No tienes un personaje para editar");
                 }
             } else{
+                System.out.println("Elige al usuario al que quieres editarle el personaje");
+                String[] userss = showOptions(um.getUsuarios());
                 
                 
             }
@@ -99,16 +102,14 @@ public class EditCharacterCommand implements Command{
         return name;
     }
     
-    protected String[] showOptions(HashMap<String, ? extends Describable> options, Scanner sc, boolean mode, String message){
+    protected String[] showOptions(HashMap<String, User> options, Scanner sc){
         LinkedList<String> inventary = new LinkedList<>();
         int number = 0; 
-        if (mode){
-            System.out.println(number+") Dejar de elegir");
-            number ++;
-        }
-        for (Describable desc: options.values()){
-            System.out.println(number + ") Se llama: " + desc.getName());
-            System.out.println("La descripcion del "+ message + ": " + desc.getDescription());
+        System.out.println(number+") Dejar de elegir");
+        number ++;
+        for (User us: options.values()){
+            System.out.println(number + ") Se llama: " + us.getName());
+            System.out.println("La cantidad de oro es: " + );
             inventary.add(desc.getName());
             number ++;
         }
