@@ -59,4 +59,9 @@ public class Player extends User implements Serializable{
 	public boolean isBlocked(){
 		return blocked;
 	}
+
+    public GameCharacter getCharac() {
+        return charac;
+    }
+        
 }
