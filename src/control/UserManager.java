@@ -84,5 +84,9 @@ public class UserManager {
 	public Collection<User> getUsers() {
 		return usuarios.values();
 	}
+
+    public void setUsuarios(Map<String, User> usuarios) {
+        this.usuarios = usuarios;
+    }
 	
 }
