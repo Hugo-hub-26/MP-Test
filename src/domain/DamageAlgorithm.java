@@ -36,14 +36,16 @@ private int type;
                 if (((Vampire) c).getBloodPoints()>=5){ 
 
                 dmg+=2;
-
-                if (((Vampire) c).getBloodPoints()<((Vampire) c).getAbility().getBloodValue())
+                }
+                if (((Vampire) c).getBloodPoints()<((Vampire) c).getAbility().getBloodValue()){
 
                     dmg-= c.getAbility().getAttackValue();
+                
                 }
-                else 
+                else {
                 ((Vampire) c).setBloodPoints(((Vampire) c).getBloodPoints()
                 -((Vampire) c).getAbility().getBloodValue());
+                }
             }
 
             //values accede a la columa derecha de la lista, 
