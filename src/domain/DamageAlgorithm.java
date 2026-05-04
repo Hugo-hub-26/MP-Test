@@ -10,7 +10,7 @@ import java.util.Iterator;
  * @author Ignacio Jerónimo Martín i.jeronimo.2024@alumnos.urjc.es
  */
 public class DamageAlgorithm implements Algorithm{
-
+private int type;
 	@Override
 	public int execute(GameCharacter c) {
 
@@ -36,9 +36,14 @@ public class DamageAlgorithm implements Algorithm{
                 if (((Vampire) c).getBloodPoints()>=5){ 
 
                 dmg+=2;
-                ((Vampire) c).setBloodPoints(((Vampire) c).getBloodPoints()-5);
 
+                if (((Vampire) c).getBloodPoints()<((Vampire) c).getAbility().getBloodValue())
+
+                    dmg-= c.getAbility().getAttackValue();
                 }
+                else 
+                ((Vampire) c).setBloodPoints(((Vampire) c).getBloodPoints()
+                -((Vampire) c).getAbility().getBloodValue());
             }
 
             //values accede a la columa derecha de la lista, 
@@ -56,6 +61,9 @@ public class DamageAlgorithm implements Algorithm{
         }
         
         return dmg;
+    }
+    public DamageAlgorithm (int type){
+        this.type=type;
     }
 	}
 	
