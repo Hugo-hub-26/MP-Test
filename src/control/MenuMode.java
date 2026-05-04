@@ -13,6 +13,7 @@ import command.ExitCommand;
 import command.ManageUsersCommand;
 import command.RegisterCharacterCommand;
 import command.SendChallengeCommand;
+import command.UnregisterCharacterCommand;
 import command.UnregisterCommand;
 import command.ValidateChallengeCommand;
 import domain.Administrator;
@@ -61,8 +62,9 @@ public class MenuMode implements Mode{
 		commands.put('c', new RegisterCharacterCommand(context));
 		commands.put('d', new EditCharacterCommand(context));
 		commands.put('e', new CheckRankingCommand(context, userManager, authManager, challengeMediator));
-		commands.put('f', new UnregisterCommand(context, userManager, authManager, challengeMediator));
-		commands.put('g', new ExitCommand(context));
+		commands.put('f', new UnregisterCharacterCommand(context, userManager, authManager, challengeMediator));
+		commands.put('g', new UnregisterCommand(context, userManager, authManager, challengeMediator));
+		commands.put('h', new ExitCommand(context));
 	}	
 
 	private void initAdminCommands() {
