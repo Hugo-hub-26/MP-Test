@@ -12,7 +12,7 @@ import java.util.Iterator; // Add necessary imports
  * @author Ignacio Jerónimo Martín i.jeronimo.2024@alumnos.urjc.es
  */
 public class DefenceAlgorithm implements Algorithm {
-    
+private int type; 
     @Override
     public int execute(GameCharacter c) {
 
@@ -42,15 +42,22 @@ public class DefenceAlgorithm implements Algorithm {
         Iterator<Strength> it = c.getStrength().values().iterator();
         while (it.hasNext()) {
             // def+=((Strength) it.next()).getValue();
+            if (it.next().getType()==type){
             def+=it.next().getValue();
+            }
         }
         Iterator<Weakness> it1 = c.getWeakness().values().iterator();
         while (it1.hasNext()) {
             // def+=((Strength) it.next()).getValue();
+            if (it1.next().getType()==type){
             def-=it1.next().getValue();
+            }
         }
         
         return def;
+    }
+    public DefenceAlgorithm(int type){
+        this.type=type;
     }
 }
 
