@@ -26,4 +26,19 @@ public class LycanthropeEditCharacter extends EditGameCharacter {
        Lycanthrope lycan = (Lycanthrope) characterr;
         lycan.setWeight(requestNumber("Introduce la nueva edad del vampiro", 50, 150, sc));
     }
+    
+        @Override
+    public void menu(){
+        System.out.println("0) Dejar de editar");
+        System.out.println("1) Editar el nombre");
+        System.out.println("2) Editar el poder");
+        System.out.println("3) Editar la habilidad");
+        System.out.println("4) Editar el minion");
+        System.out.println("5) Editar las fortalezas");
+        System.out.println("6) Editar las debilidades");
+        System.out.println("7) Editar la armadura principal");
+        System.out.println("8) Editar la arma o armas principal");
+        System.out.println("9) Editar la altura");
+        System.out.println("9) Editar el peso");
+    }
 }
