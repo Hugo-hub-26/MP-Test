@@ -71,7 +71,8 @@ public class EditCharacterCommand implements Command{
                 }
             } else{
                 System.out.println("Elige al usuario al que quieres editarle el personaje");
-                String[] userss = showOptions(um.getUsuarios());
+                
+                String[] userss = showOptions(,context.getScanner());
                 
                 
             }
@@ -102,18 +103,17 @@ public class EditCharacterCommand implements Command{
         return name;
     }
     
-    protected String[] showOptions(HashMap<String, User> options, Scanner sc){
+    protected String[] showOptions(HashMap<String, Player> options, Scanner sc){
         LinkedList<String> inventary = new LinkedList<>();
         int number = 0; 
-        System.out.println(number+") Dejar de elegir");
+        System.out.println(number+") No editar");
         number ++;
-        for (User us: options.values()){
-            System.out.println(number + ") Se llama: " + us.getName());
-            System.out.println("La cantidad de oro es: " + );
-            inventary.add(desc.getName());
+        for (Player pl: options.values()){
+            System.out.println(number + ") Se llama: " + pl.getName());
+            System.out.println("La cantidad de oro es: " + pl.getGold());
+            inventary.add(pl.getName());
             number ++;
         }
-        
         return inventary.toArray(new String[0]);
     }
 }
