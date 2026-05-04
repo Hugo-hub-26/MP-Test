@@ -37,11 +37,11 @@ public class VampireCharacterBuilder extends SimilarGameCharacterBuilder {
     
         
         @Override
-        protected void setMinion(GameCharacter characterr, Scanner sc, Demon demon){//revisar la logica muy bien
+        public void setMinion(GameCharacter characterr, Scanner sc, Demon demon){//revisar la logica muy bien
         String message;
         if (demon== null){
-            message = "Elige el esbirro que quiere que tenga tu personaje:\n 0) Ninguno\n1) Demonio \n 2) Ghoul \n 3) Humano";
-        }else message = "Elige el esbirro que quiere que tenga tu demonio:\n 0) Ninguno\n1) Demonio \n 2) Ghoul \n 3) Humano";
+            message = "Elige el esbirro que quiere que tenga tu personaje:\n 0) Ninguno\n1) Demonio \n 2) Ghoul";
+        }else message = "Elige el esbirro que quiere que tenga tu demonio:\n 0) Ninguno\n1) Demonio \n 2) Ghoul";
         switch (requestNumber(message,0,2,sc)) {
             case 0:{
                 if (demon==null){
