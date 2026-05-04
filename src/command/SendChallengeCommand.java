@@ -6,7 +6,10 @@ package command;
 
 import control.GameContext;
 import control.UserManager;
+import domain.Challenge;
 import domain.ChallengeMediator;
+import domain.Player;
+import domain.User;
 
 /**
  *
@@ -14,12 +17,54 @@ import domain.ChallengeMediator;
  */
 public class SendChallengeCommand implements Command{
 
-	public SendChallengeCommand(GameContext context, UserManager userManager, ChallengeMediator challengeMediator) {
-	}
+	private final GameContext context;
+    private final UserManager userManager;
+    private final ChallengeMediator mediator;
+
+    public SendChallengeCommand(GameContext context, UserManager userManager, ChallengeMediator mediator) {
+        this.context = context;
+        this.userManager = userManager;
+        this.mediator = mediator;
+    }
 
 	@Override
 	public void execute() {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		
+		if (!(context.getCurrentUser() instanceof Player defying)) {
+            System.out.println("Solo un jugador puede lanzar desafíos.\n");
+            return;
+        }
+
+        System.out.println("Nick del rival:");
+        String rivalNick = context.getScanner().nextLine().trim();
+
+        System.out.println("Oro a apostar:");
+        int bet;
+		
+		try {
+            bet = Integer.parseInt(context.getScanner().nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Cantidad inválida.\n");
+            return;
+        }
+
+        if (bet <= 0 || bet > defying.getGold()) {
+            System.out.println("Apuesta inválida (debe ser >0 y <= tu oro).\n");
+            return;
+        }
+
+        User u = userManager.findByNick(rivalNick);
+        if (!(u instanceof Player defied)) {
+            System.out.println("El jugador rival no existe.\n");
+            return;
+        }
+		
+		Challenge ch = new Challenge(defying, defied, bet); // estado PENDING_ADMIN_VALIDATION
+        mediator.registerChallenge(ch);
+
+        System.out.println("Desafío enviado. Queda pendiente de validación por un operador.\n");
+
+
 	}
 	
 }

@@ -11,20 +11,38 @@ package domain;
 public class Player extends User{
 	private String registerNumber;	
 	private int gold;
-        private GameCharacter charac;
+	private GameCharacter charac;
+	boolean blocked;
 	
 	public Player(String n, String nck, String p){
 		super(n, nck, p);
 		//registerNumber = newRegisterNumber();
 		gold = 0;
-                charac = null;
+   		charac = null;
+		blocked = false;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
 	}
 
 	public int getGold(){
 		return this.gold;
 	}
 	
-        public void setGameCharacter(GameCharacter charac){
-            this.charac = charac;
-        }
+    public void setGameCharacter(GameCharacter charac){
+  		this.charac = charac;
+    }
+
+	public void block(){
+		this.blocked = true;
+	}
+
+	public void unblock(){
+		this.blocked = false;
+	}
+
+	public boolean isBlocked(){
+		return blocked;
+	}
 }

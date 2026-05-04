@@ -56,25 +56,25 @@ public class Challenge implements Serializable {
 		return state;
 	}
 
-	void validateByAdmin(Administrator admin) {
+	public void validateByAdmin(Administrator admin) {
 		this.validatedBy = admin;
 		this.state = ChallengeState.PENDING_PLAYER_RESPONSE;
 	}
 
-	void denyByAdmin(Administrator admin) {
+	public void denyByAdmin(Administrator admin) {
 		this.validatedBy = admin;
 		this.state = ChallengeState.DENIED_BY_ADMIN;
 	}
 
-	void acceptByPlayer() {
+	public void acceptByPlayer() {
         this.state = ChallengeState.ACCEPTED;
     }
 
-    void rejectByPlayer() {
+    public void rejectByPlayer() {
         this.state = ChallengeState.REJECTED;
     }
 
-    void finish() {
+    public void finish() {
         this.state = ChallengeState.FINISHED;
     }
 }
