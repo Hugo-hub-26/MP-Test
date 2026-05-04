@@ -154,6 +154,9 @@ private void resolveCombat() {
         // Reparto de oro (tu regla actual)
         winnerPlayer.setGold(winnerPlayer.getGold() + bet);
         loserPlayer.setGold(Math.max(0, loserPlayer.getGold() - bet));
+        
+        //Persistencia
+        saveBattleToHistory(winnerPlayer,loserPlayer,bet,calc,result);
     }
 
     screen.addLogEntry("");
@@ -169,7 +172,7 @@ private void resolveCombat() {
         
 	}
 
-    private void saveBattleToHistory(Player p1, Player p2, Player winner, int gold, GameContext result) {
+    private void saveBattleToHistory(Player p1, Player p2, int gold, StatsCalculator result, GameContext draw) {
     try (java.io.FileWriter fw = new java.io.FileWriter("data/combat_history.txt", true);
          java.io.PrintWriter out = new java.io.PrintWriter(fw)) {
         
@@ -177,26 +180,24 @@ private void resolveCombat() {
         out.println("Fecha: " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         out.println("Desafiante: " + p1.getNick());
         out.println("Desafiado: " + p2.getNick());
-        out.println("Vencedor: " + (winner != null ? winner.getNick() : "EMPATE"));
+        if (draw.getDraw()){
+            out.println("Hubo un empate");    
+        }else{
+            out.println("Vencedor:" + p1.getNick());    
+        }
         out.println("Oro Ganado: " + gold);
         
-        // Asumiendo que result tiene el número de rondas
-        out.println("Rondas empleadas: " + result.getRounds()); 
-
-        // Lógica de esbirros vivos
-        StringBuilder esbirrosVivos = new StringBuilder("Contendientes con esbirros vivos: ");
-        boolean algunoVivo = false;
+        out.println("Rondas empleadas: " + result.getAndResetRounds()); 
         
-        if (hasAliveMinions(p1.getGameCharacter())) {
-            esbirrosVivos.append(p1.getNick()).append(" ");
-            algunoVivo = true;
+        if(draw.getDraw()){
+            out.println("Ninguno de los esbirros quedo con vida");             
+        }else{
+            if(result.getAndResetMinionsAlive()){
+                out.println("Los esbirros de" + p1.getNick() + " quedaron vivos");             
+            } else{
+                out.println("Ninguno de los esbirros quedo con vida");                            
+            }
         }
-        if (hasAliveMinions(p2.getGameCharacter())) {
-            esbirrosVivos.append(p2.getNick());
-            algunoVivo = true;
-        }
-        
-        out.println(algunoVivo ? esbirrosVivos.toString() : "Ningún esbirro quedó en pie.");
         out.println("---------------------------\n");
         
     } catch (java.io.IOException e) {
