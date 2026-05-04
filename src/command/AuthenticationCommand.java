@@ -11,6 +11,7 @@ import control.MenuMode;
 import control.Mode;
 import control.UserManager;
 import domain.ChallengeMediator;
+import domain.Player;
 import domain.User;
 import interaction.AuthenticationScreen;
 import interaction.LoginErrorScreen;
@@ -55,6 +56,10 @@ public class AuthenticationCommand implements Command{
 
 		if (authManager.login(credentials[0], credentials[1])){
 			User user = userManager.findByNick(credentials[0]);
+			if ((user instanceof Player player) && player.isBlocked()){
+				System.out.println("Este usuario está bloqueado. Localice a un administrador.");
+	            context.setNextMode(new AuthenticationMode(new LoginErrorScreen(context.getScanner()), context, authManager, userManager, challengeMed));
+			}
 			if (user != null) {
 	            context.setCurrentUser(user);
 	            context.setNextMode(successMode);

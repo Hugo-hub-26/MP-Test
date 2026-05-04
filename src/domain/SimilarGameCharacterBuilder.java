@@ -53,7 +53,7 @@ public abstract class SimilarGameCharacterBuilder implements GameCharacterBuilde
     protected void setAbility(GameCharacter characterr, Scanner sc){
         System.out.println("Escoge la habilidad especial de tu personaje:");
         String[] inventary = showOptions(ability,sc,false,"habilidad");
-        String name = inventary[requestNumber("Escoge la habilidad de tu personaje pulsando el número", 0, inventary.length-1, sc)];
+        String name = inventary[requestNumber("Escoge la habilidad de tu personaje pulsando el numero", 0, inventary.length-1, sc)];
         characterr.setAbility(ability.get(name)); 
     }
     
@@ -61,7 +61,7 @@ public abstract class SimilarGameCharacterBuilder implements GameCharacterBuilde
         String message;
         if (demon== null){
             message = "Elige el esbirro que quiere que tenga tu personaje:\n 0) Ninguno\n1) Demonio \n 2) Ghoul \n 3) Humano";
-        }else message = "Elige el esbirro que quiere que tenga tu demonio:\n 0) Ninguno\n1) Demonio \n 2) Ghoul \n 3) Humano";
+        }else message = "Elige los esbirros que quiere que tenga tu demonio:\n 0) Ninguno\n1) Demonio \n 2) Ghoul \n 3) Humano";
         switch (requestNumber(message,0,3,sc)) {
             case 0:{
                 if (demon==null){
@@ -72,14 +72,21 @@ public abstract class SimilarGameCharacterBuilder implements GameCharacterBuilde
             case 1: {
                 String name = requestString("Elige el nombre del esbirro", sc);
                 int health = requestNumber("Elige la salud del esbirro",1,3,sc);
-                String pact = requestString("Describe la depndencia del esbirro",sc);
+                String pact = requestString("Describe la dependencia del esbirro",sc);
                 if (demon==null){
-                    Demon demonion = new Demon(name,health,characterr,pact,null);
-                    setMinion(characterr,sc,demonion);
-                    characterr.setMinion(demonion);
+                    Demon demonion = new Demon(name,health,characterr,pact,new LinkedList<>());
+                    int size;
+                    do{
+                        size = demonion.getMinions().size();
+                        setMinion(characterr,sc,demonion);
+                    } while(size!=demonion.getMinions().size());                    characterr.setMinion(demonion);
                 }else{
-                    Demon demonion = new Demon(name,health,characterr,pact,null);
-                    setMinion(characterr,sc,demonion);
+                    Demon demonion = new Demon(name,health,characterr,pact,new LinkedList<>());
+                    int size;
+                    do{
+                        size = demonion.getMinions().size();
+                        setMinion(characterr,sc,demonion);
+                    } while(size!=demonion.getMinions().size());
                     demon.addMinion(demonion);
                 }
                 break;
@@ -97,7 +104,7 @@ public abstract class SimilarGameCharacterBuilder implements GameCharacterBuilde
                 String name = requestString("Elige el nombre del esbirro", sc);
                 int health = requestNumber("Elige la salud del esbirro",1,3,sc);
                 String[] loyalty = {"ALTA", "MEDIA", "BAJA"};
-                String loyal = loyalty[requestNumber("Elige la lealtad del esbirro /n0)ALTA /n1)MEDIA /n2) BAJA", 0,2,sc)];
+                String loyal = loyalty[requestNumber("Elige la lealtad del esbirro \n0)ALTA \n1)MEDIA \n2) BAJA", 0,2,sc)];
                 if (demon == null){
                     characterr.setMinion(new Human(name,health, loyal ,characterr));
                 }else demon.addMinion(new Human(name,health,loyal ,characterr));
@@ -198,7 +205,7 @@ public abstract class SimilarGameCharacterBuilder implements GameCharacterBuilde
                 System.out.println(message + "(" + min + "-" + max + ")");
                 number = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Error: Introduce un número válido.");
+                System.out.println("Error: Introduce un numero valido.");
                 proof = true;
             }
         } while (number < min || number > max || proof); 
@@ -223,7 +230,7 @@ public abstract class SimilarGameCharacterBuilder implements GameCharacterBuilde
         }
         for (Describable desc: options.values()){
             System.out.println(number + ") Se llama: " + desc.getName());
-            System.out.println("La descripción del "+ message + ": " + desc.getDescription());
+            System.out.println("La descripcion del "+ message + ": " + desc.getDescription());
             inventary.add(desc.getName());
             number ++;
         }

@@ -8,6 +8,7 @@ import domain.Catalogue;
 import domain.ChallengeMediator;
 import interaction.Screen;
 import interaction.WelcomeScreen;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -19,7 +20,7 @@ public class MPPracticaImplementacion {
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		
 		Scanner s = new Scanner(System.in);
 

@@ -12,8 +12,6 @@ import domain.Administrator;
 import domain.Challenge;
 import domain.ChallengeMediator;
 import interaction.MenuScreen;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -47,38 +45,31 @@ public class ApproveChallengeCommand implements Command{
 			return;
 		}
 
-		// --- Configurar fortalezas/debilidades presentes ---
-		// Si ya tienes clases Strength/Weakness, cámbialo por tus tipos reales.
-		// Aquí uso Strings para no asumir tu modelo exacto.
-		List<String> strengths = new ArrayList<>();
-		List<String> weaknesses = new ArrayList<>();
+		if (challenge.getDefyingPlayer().getGameCharacter() == null ||
+    		challenge.getDefiedPlayer().getGameCharacter() == null) {
+    		System.out.println("Desafío inválido: jugador sin personaje.");
+    		challenge.denyByAdmin(admin);
+    		return;
+		}
 
-		System.out.println("Configurar fortalezas/debilidades para este desafío.");
-		System.out.println("Introduce fortalezas (una por línea). ENTER en blanco para terminar:");
+		int combatType = 1;
+
+		System.out.println("""
+Configurar tipo de combate para este desafío.
+1) Dia			
+2) Noche
+3) Tarde
+                     				""");
+		System.out.println("Introduce el tipo de combate:");
 		while (true) {
 			String line = context.getScanner().nextLine().trim();
 			if (line.isEmpty()) {
 				break;
 			}
-			strengths.add(line);
+			combatType = Integer.parseInt(line);
 		}
+		challenge.setCombatType(combatType);
 
-		System.out.println("Introduce debilidades (una por línea). ENTER en blanco para terminar:");
-		while (true) {
-			String line = context.getScanner().nextLine().trim();
-			if (line.isEmpty()) {
-				break;
-			}
-			weaknesses.add(line);
-		}
-
-// Necesitas guardar esto dentro del Challenge.
-		// Recomendado: añade al Challenge dos listas:
-		//   - activeStrengths
-		//   - activeWeaknesses
-		// y un setter:
-		// challenge.setActiveModifiers(strengths, weaknesses);
-		// Aprobar en el mediator (cambia estado a PENDING_PLAYER_RESPONSE y persiste)
 		mediator.passChallenge(challenge, admin);
 
 		System.out.println("Desafío validado. Notificación enviada al jugador desafiado.\n");

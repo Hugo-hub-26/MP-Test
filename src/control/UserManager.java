@@ -4,6 +4,7 @@
  */
 package control;
 
+import domain.Player;
 import domain.User;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +22,7 @@ import java.util.Map;
  */
 public class UserManager {
 
-	private static final String FILE_NAME = "./data/usuarios.dat";
+	private static final String FILE_NAME = "./data/users.dat";
 	private Map<String, User> usuarios;
 
 	public UserManager(){
@@ -46,6 +48,13 @@ public class UserManager {
 			e.printStackTrace();
 			usuarios = new HashMap<>();
 		}
+		
+		for (User u : usuarios.values()) {
+    		if (u instanceof Player p) {
+        		Player.updateNextRegisterNumber(p.getRegisterNumber());
+    		}
+		}
+
 	}
 
 	// ========= SAVE =========
@@ -71,5 +80,12 @@ public class UserManager {
 	public void remove(String nick) {
 		usuarios.remove(nick);
 	}
-	
+
+	public Collection<User> getUsers() {
+		return usuarios.values();
+	}
+
+        public Map<String, User> getUsuarios() {
+            return usuarios;
+        }	
 }

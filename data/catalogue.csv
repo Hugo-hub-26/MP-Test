@@ -1,0 +1,28 @@
+Catalogue
+"discipline","Sangre Antigua","Disciplina vampírica basada en la sangre ancestral",1,1,1
+"discipline","Bestia Interior","Disciplina que libera el instinto salvaje",2,1,0
+"discipline","Piel de Acero","Disciplina defensiva nacida del sufrimiento eterno",0,2,1
+
+"gift","Colmillos Carmesí","Don vampírico que potencia el drenaje de vida",1,1
+"gift","Regeneración Lupina","Don licántropo de curación acelerada",2,0
+"gift","Sed de Sangre","Don que aumenta el daño en combate prolongado",1,2
+
+"will","Voluntad Nocturna","Voluntad que resiste el control mental",1,1,1
+"will","Furia Salvaje","Voluntad licántropa centrada en el ataque brutal",2,0,2
+"will","Hierro de Medianoche","Voluntad defensiva frente a la magia oscura",0,3,1
+
+"armor","Cota de Oscuridad","Armadura ligera tejida con sombras",1,1
+"armor","Piel Endurecida","Armadura natural licántropa",2,2
+"armor","Coraza del Abismo","Armadura pesada de origen infernal",3,0
+
+"weapon","Espada Carmesí","Hoja vampírica bañada en sangre",1,1,"true"
+"weapon","Garras Malditas","Arma natural licántropa de dos manos",3,0,"false"
+"weapon","Lanza Nocturna","Arma equilibrada forjada bajo luna llena",2,1,"true"
+
+"strength","Resistencia No-Muerta","Fortaleza propia de criaturas inmortales",1,1
+"strength","Instinto Depredador","Fortaleza mental y física salvaje",0,2
+"strength","Sangre Espesa","Fortaleza mixta entre fuerza y aguante",1,2
+
+"weakness","Luz Solar","Debilidad clásica de los vampiros",1,1
+"weakness","Plata Bendita","Debilidad crítica para licántropos",2,0
+"weakness","Hambre Incontrolable","Debilidad situacional por sed de sangre",0,2

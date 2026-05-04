@@ -1,45 +1,46 @@
 
 package domain;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  *
  * @author Ignacio Jerónimo Martín i.jeronimo.2024@alumnos.urjc.es
  */
-public abstract class GameCharacter {
-
+public abstract class GameCharacter implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String name;	
 	private int health;
 	private int power;
-        private Ability ability;
-        private HashMap<String,Armor> armor;
-        private HashMap<String,Weapons> weapon;       
-        private Minion minion;
-        private HashMap<String, Strength> strength;
-        private HashMap<String, Weakness> weakness;
-        private Armor principalArmor;
-        private Weapons principalWeaponOne;
-        private Weapons principalWeaponTwo;
+  	private Ability ability;
+  	private HashMap<String,Armor> armor;
+  	private HashMap<String,Weapons> weapon;       
+  	private Minion minion;
+   	private HashMap<String, Strength> strength;
+   	private HashMap<String, Weakness> weakness;
+   	private Armor principalArmor;
+   	private Weapons principalWeaponOne;
+   	private Weapons principalWeaponTwo;
 
-        public GameCharacter() {
-        }
+    public GameCharacter() {
+   	}
 
-        public void setName(String name) {
-            this.name = name;
-        }
+   	public void setName(String name) {
+   		this.name = name;
+   	}
 
-        public void setHealth(int health) {
-            this.health = health;
-        }
+	public void setHealth(int health) {
+   		this.health = health;
+    }
         
 	public String getName() {
 		return name;
 	}
 
 	public int getHealth() {
-                return health;
-        }
+        return health;
+    }
 
 	public int getPower() {
 		return power;
@@ -60,8 +61,6 @@ public abstract class GameCharacter {
     public Weapons getPrincipalWeaponTwo() {
         return principalWeaponTwo;
     }
-
-
 
     public HashMap<String, Armor> getArmor() {
         return armor;

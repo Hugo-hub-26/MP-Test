@@ -58,4 +58,23 @@ public class Demon implements Minion{
     public void removeMinion(Minion minion){
         minions.remove(minion);
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setPact(String pact) {
+        this.pact = pact;
+    }
+
+    public void setMinions(LinkedList<Minion> minions) {
+        this.minions = minions;
+    }
+    
+    
 }
+

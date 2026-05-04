@@ -4,11 +4,15 @@
  */
 package domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Ignacio Jerónimo Martín i.jeronimo.2024@alumnos.urjc.es
  */
-public abstract class Equipment implements Describable{
+public abstract class Equipment implements Describable, Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	private final String name;
         private final String description;
 	private final int attackModifier;

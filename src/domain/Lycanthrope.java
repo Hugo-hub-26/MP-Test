@@ -10,8 +10,8 @@ package domain;
 public class Lycanthrope extends GameCharacter {
     private int height;
     private int weight;
-    private final int rage =0;
-    private boolean mode;
+    private int rage =0;
+    private boolean mode = false;
     
     public int getHeigth() {
         return height;
@@ -53,4 +53,12 @@ public class Lycanthrope extends GameCharacter {
             mode = false;
         }
     }
+
+    public void setRage(int rage) {
+        if(rage>3){
+            this.rage=3;
+        }
+        this.rage = rage;
+    }
+    
 }

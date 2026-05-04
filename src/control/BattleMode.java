@@ -1,142 +1,207 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package control;
 
-import domain.*;
+import command.Command;
+import command.ExitBattleCommand;
+import domain.Challenge;
+import domain.ChallengeMediator;
+import domain.GameCharacter;
+import domain.Player;
+import domain.StatsCalculator;
 import interaction.BattleScreen;
-import interaction.Screen;
-
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Controlador encargado de gestionar la lógica y el flujo de los combates.
- * Aplica las reglas matemáticas de dados, la absorción de daño por esbirros
- * y el resultado final de los desafíos.
- * @author Miguel Pradillo Bartolomé
+ *
+ * @author Ignacio Jerónimo Martín i.jeronimo.2024@alumnos.urjc.es
  */
 public class BattleMode implements Mode {
+	
+	private final GameContext context;
+    private final AuthenticationManager authManager;
+    private final UserManager userManager;
+    private final ChallengeMediator mediator;
 
-    private SaveAdministrator saveAdmin;
-    private Random dice;
+    private final Challenge challenge;
+    private final BattleScreen screen;
 
-    public BattleMode() {
-        this.saveAdmin = new SaveAdministrator();
-        this.dice = new Random();
+    private Map<Character, Command> commands;
+    private boolean resolved = false;
+
+	
+	public BattleMode(GameContext context,
+                      AuthenticationManager authManager,
+                      UserManager userManager,
+                      ChallengeMediator mediator,
+                      Challenge challenge) {
+
+        this.context = context;
+        this.authManager = authManager;
+        this.userManager = userManager;
+        this.mediator = mediator;
+
+        this.challenge = challenge;
+        this.screen = new BattleScreen(context.getScanner());
+
+        initCommands();
     }
 
-    /**
-     * Método principal que ejecuta la lógica de un combate entre dos jugadores.
-     * @param challenge El desafío validado y aceptado que se va a resolver.
-     */
-    public void executeCombat(Challenge challenge) {
-        Player j1 = challenge.getChallenger();
-        Player j2 = challenge.getChallenged();
 
-        GameCharacter c1 = j1.getCharacter();
-        GameCharacter c2 = j2.getCharacter();
+	private void initCommands() {
+        commands = new HashMap<>();
+        commands.put('g', new ExitBattleCommand(context, authManager, userManager, mediator));
+    }
 
-        int round = 1;
-        boolean combatEnded = false;
-
-        // Instanciamos la pantalla para ir imprimiendo el Log (opcional según cómo gestionéis la UI)
-        BattleScreen screen = new BattleScreen();
-
-        while (!combatEnded) {
-            // 1. Calcular potenciales de Ataque y Defensa (Poder + Equipo + Habilidad + Modificadores)
-            // Nota: Aquí delegaríamos en StatsCalculator o en el propio GameCharacter
-            int attackPotentialC1 = calculateAttackPotential(c1);
-            int defensePotentialC1 = calculateDefensePotential(c1);
-            
-            int attackPotentialC2 = calculateAttackPotential(c2);
-            int defensePotentialC2 = calculateDefensePotential(c2);
-
-            // 2. Lanzamiento de dados y cálculo de éxitos (Resultados de 5 o 6)
-            int successesAttackC1 = rollDiceAndCountSuccesses(attackPotentialC1);
-            int successesDefenseC1 = rollDiceAndCountSuccesses(defensePotentialC1);
-            
-            int successesAttackC2 = rollDiceAndCountSuccesses(attackPotentialC2);
-            int successesDefenseC2 = rollDiceAndCountSuccesses(defensePotentialC2);
-
-            // 3. Resolución simultánea de la ronda
-            int damageToC2 = Math.max(0, successesAttackC1 - successesDefenseC2);
-            int damageToC1 = Math.max(0, successesAttackC2 - successesDefenseC1);
-
-            applyDamage(c2, damageToC2);
-            applyDamage(c1, damageToC1);
-
-            // 4. Comprobación de fin de combate
-            if (c1.getHealth() <= 0 || c2.getHealth() <= 0) {
-                combatEnded = true;
-                resolveCombatResults(j1, j2, c1, c2, challenge.getGoldBet());
-            }
-            round++;
+	@Override
+	public Mode showScreen() {
+		
+		// Resolvemos el combate una sola vez
+        if (!resolved) {
+            resolveCombat();
+            resolved = true;
         }
-    }
 
-    /**
-     * Lanza N dados (caras 1-6) y cuenta cuántos son éxitos (5 o 6).
-     */
-    private int rollDiceAndCountSuccesses(int potential) {
-        int successes = 0;
-        for (int i = 0; i < potential; i++) {
-            int roll = dice.nextInt(6) + 1; // Genera número entre 1 y 6
-            if (roll >= 5) {
-                successes++;
-            }
-        }
-        return successes;
-    }
+        char option = screen.showScreen(commands.keySet());
+        return doAction(option);
 
-    /**
-     * Aplica el daño siguiendo la regla de negocio: Primero sufren los esbirros.
-     */
-    private void applyDamage(GameCharacter character, int damage) {
-        for (int i = 0; i < damage; i++) {
-            Minion minion = character.getMinion();
-            
-            // Si tiene esbirro y está vivo, el daño va al esbirro
-            if (minion != null && minion.getHealth() > 0) {
-                minion.setHealth(minion.getHealth() - 1);
-            } else {
-                // Si no hay esbirros o están muertos, el daño va al personaje
-                character.setHealth(character.getHealth() - 1);
-            }
-        }
-    }
+	}
 
-    /**
-     * Resuelve el final del combate, reparte el oro y guarda el estado.
-     */
-    private void resolveCombatResults(Player j1, Player j2, GameCharacter c1, GameCharacter c2, int goldBet) {
-        if (c1.getHealth() <= 0 && c2.getHealth() <= 0) {
-            // Empate: Ambos mueren en la misma ronda. No se transfiere oro.
-            System.out.println("¡El combate ha terminado en EMPATE!");
-        } else if (c1.getHealth() > 0) {
-            // Gana J1
-            j1.setGold(j1.getGold() + goldBet);
-            System.out.println("¡El vencedor es " + j1.getNick() + "!");
+	@Override
+	public Mode doAction(char option) {
+		
+		Command cmd = commands.get(option);
+        if (cmd == null) throw new IllegalStateException("Opción inválida en combate: " + option);
+
+        cmd.execute();
+        return context.getNextMode();
+
+	}
+
+	
+private void resolveCombat() {
+
+    Player p1 = challenge.getDefyingPlayer();
+    Player p2 = challenge.getDefiedPlayer();
+    int bet = challenge.getBetGold();
+
+	if (p1.getGameCharacter() == null || p2.getGameCharacter() == null) {
+		screen.clearLog();
+		screen.addLogEntry("Error: uno de los jugadores no tiene personaje.");
+		screen.addLogEntry("El combate no puede realizarse.");
+		challenge.finish(); // o challenge.cancel(), según tu modelo
+		userManager.save();
+		return;
+	}
+
+
+    // Log inicial
+    screen.clearLog();
+    screen.addLogEntry("Combate entre " + p1.getNick() + " y " + p2.getNick());
+    screen.addLogEntry("Apuesta: " + bet + " oro");
+    screen.addLogEntry("");
+
+    // 1) Preparar contexto de combate con los personajes
+    context.setCharacter1(p1.getGameCharacter());
+	context.setCharacter2(p2.getGameCharacter());
+
+    // 2) Ejecutar combate automático
+    StatsCalculator calc = new StatsCalculator(challenge.getCombatType()); // o el type que uses
+    GameContext result = calc.battle(context);
+
+    // 3) Aplicar timer 24h (mejor aquí: “ha participado en combate”)
+    p1.markChallengeTime();
+    p2.markChallengeTime();
+
+    // 4) Interpretar resultado
+    if (result.getDraw()) {
+        screen.addLogEntry("Resultado: EMPATE");
+        // Política de oro en empate (elige una):
+        // a) no cambia oro
+        // b) se devuelve la apuesta (si la retenías)
+        // Aquí lo dejo como “sin cambios”
+    } else {
+
+        GameCharacter winnerChar = result.getCharacter1();
+        GameCharacter loserChar  = result.getCharacter2();
+
+        // Mapeo ganador -> Player (robusto si el objeto es el mismo)
+        Player winnerPlayer;
+        Player loserPlayer;
+
+        if (winnerChar == p1.getGameCharacter()) {
+            winnerPlayer = p1;
+            loserPlayer = p2;
+        } else if (winnerChar == p2.getGameCharacter()) {
+            winnerPlayer = p2;
+            loserPlayer = p1;
         } else {
-            // Gana J2
-            j2.setGold(j2.getGold() + goldBet);
-            System.out.println("¡El vencedor es " + j2.getNick() + "!");
+            // Fallback por nombre (por si el battle() devuelve nuevas instancias)
+            if (winnerChar.getName().equals(p1.getGameCharacter().getName())) {
+                winnerPlayer = p1;
+                loserPlayer = p2;
+            } else {
+                winnerPlayer = p2;
+                loserPlayer = p1;
+            }
         }
 
-        // Guardamos los cambios en el sistema de persistencia
-        saveAdmin.saveState();
+        screen.addLogEntry("Ganador: " + winnerPlayer.getNick());
+
+        // Reparto de oro (tu regla actual)
+        winnerPlayer.setGold(winnerPlayer.getGold() + bet);
+        loserPlayer.setGold(Math.max(0, loserPlayer.getGold() - bet));
+        
+        //Persistencia
+        saveBattleToHistory(winnerPlayer,loserPlayer,bet,calc,result);
     }
 
-    // --- Métodos dummy de cálculo  ---
-    private int calculateAttackPotential(GameCharacter c) {
-        return c.getPower() + 2; // Ejemplo simplificado (Poder + Equipo + Modificadores)
-    }
+    screen.addLogEntry("");
+    screen.addLogEntry("Resultado aplicado a oro. Fin del combate.");
 
-    private int calculateDefensePotential(GameCharacter c) {
-        return c.getPower() + 1; // Ejemplo simplificado
-    }
+    // 5) Estado del desafío
+    challenge.finish();
 
-    // --- Métodos obligatorios de la interfaz Mode ---
-    @Override
-    public char showScreen(Screen screen) {
-        screen.show();
-        return '0'; // Carácter de control de flujo
-    }
+    // 6) Persistencia
+    
+    userManager.save();
+	challenge.finish();
+        
+	}
 
+    private void saveBattleToHistory(Player p1, Player p2, int gold, StatsCalculator result, GameContext draw) {
+    try (java.io.FileWriter fw = new java.io.FileWriter("data/combat_history.txt", true);
+         java.io.PrintWriter out = new java.io.PrintWriter(fw)) {
+        
+        out.println("--- REGISTRO DE COMBATE ---");
+        out.println("Fecha: " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+        out.println("Desafiante: " + p1.getNick());
+        out.println("Desafiado: " + p2.getNick());
+        if (draw.getDraw()){
+            out.println("Hubo un empate");    
+        }else{
+            out.println("Vencedor:" + p1.getNick());    
+        }
+        out.println("Oro Ganado: " + gold);
+        
+        out.println("Rondas empleadas: " + result.getAndResetRounds()); 
+        
+        if(draw.getDraw()){
+            out.println("Ninguno de los esbirros quedo con vida");             
+        }else{
+            if(result.getAndResetMinionsAlive()){
+                out.println("Los esbirros de" + p1.getNick() + " quedaron vivos");             
+            } else{
+                out.println("Ninguno de los esbirros quedo con vida");                            
+            }
+        }
+        out.println("---------------------------\n");
+        
+    } catch (java.io.IOException e) {
+        System.err.println("Error al guardar el historial de combate: " + e.getMessage());
+    }
+}
 }

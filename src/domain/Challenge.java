@@ -5,8 +5,6 @@
 package domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -20,15 +18,15 @@ public class Challenge implements Serializable {
 	private final Player defyingPlayer;
 	private final Player defiedPlayer;
 	private final int betGold;
-	private List<Strength> activeStrengths = new ArrayList<>();
-	private List<Weakness> activeWeaknesses = new ArrayList<>();
+	private int combatType;
 
-	//REVISAR
-	public void setActiveModifiers(List<Strength> s, List<Weakness> w) {
-		this.activeStrengths = s;
-		this.activeWeaknesses = w;
+	public void setCombatType(int combatType) {
+		this.combatType = combatType;
 	}
 
+	public int getCombatType() {
+		return combatType;
+	}
 
     public Challenge(Player defyingPlayer,
                      Player defiedPlayer,
@@ -56,25 +54,25 @@ public class Challenge implements Serializable {
 		return state;
 	}
 
-	void validateByAdmin(Administrator admin) {
+	public void validateByAdmin(Administrator admin) {
 		this.validatedBy = admin;
 		this.state = ChallengeState.PENDING_PLAYER_RESPONSE;
 	}
 
-	void denyByAdmin(Administrator admin) {
+	public void denyByAdmin(Administrator admin) {
 		this.validatedBy = admin;
 		this.state = ChallengeState.DENIED_BY_ADMIN;
 	}
 
-	void acceptByPlayer() {
+	public void acceptByPlayer() {
         this.state = ChallengeState.ACCEPTED;
     }
 
-    void rejectByPlayer() {
+    public void rejectByPlayer() {
         this.state = ChallengeState.REJECTED;
     }
 
-    void finish() {
+    public void finish() {
         this.state = ChallengeState.FINISHED;
     }
 }

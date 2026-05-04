@@ -34,33 +34,49 @@ public class LaunchChallengeCommand implements Command{
         Scanner sc = context.getScanner();
         Player defying = (Player) context.getCurrentUser();
 
-        System.out.println("Nick del rival:");
-        String rivalNick = sc.nextLine().trim();
+		if (defying.getGameCharacter() != null){
 
-        System.out.println("Oro a apostar:");
-        int bet;
-        try {
-            bet = Integer.parseInt(sc.nextLine().trim());
-        } catch (NumberFormatException e) {
-            System.out.println("Cantidad inválida.");
-            return;
-        }
+	        System.out.println("Nick del rival:");
+   	     	String rivalNick = sc.nextLine().trim();
 
-        if (bet <= 0 || bet > defying.getGold()) {
-            System.out.println("No puedes apostar esa cantidad.");
-            return;
-        }
+	        System.out.println("Oro a apostar:");
+    	    int bet;
+	        try {
+	            bet = Integer.parseInt(sc.nextLine().trim());
+	        } catch (NumberFormatException e) {
+	            System.out.println("Cantidad invalida.");
+	            return;
+	        }
 
-        if (!(userManager.findByNick(rivalNick) instanceof Player)) {
-            System.out.println("El jugador no existe.");
-            return;
-        }
+	        if (bet <= 0 || bet > defying.getGold()) {
+	            System.out.println("No puedes apostar esa cantidad.");
+	            return;
+	        }
 
-        Player defied = (Player) userManager.findByNick(rivalNick);
+	        if (!(userManager.findByNick(rivalNick) instanceof Player)) {
+	            System.out.println("El jugador no existe.");
+	            return;
+	        }
 
-        Challenge c = new Challenge(defying, defied, bet);
-        mediator.registerChallenge(c);
+			if ((userManager.findByNick(rivalNick).equals(defying))) {
+	            System.out.println("No puedes desafiarte a ti mismo.");
+	            return;
+	        }
 
-        System.out.println("Desafío enviado. Pendiente de validación por un administrador.");
+	        Player defied = (Player) userManager.findByNick(rivalNick);
+
+			if (bet > defied.getGold()){
+				System.out.println("La cantidad es mayor que lo que el rival tiene disponible.");
+			}
+
+	        Challenge c = new Challenge(defying, defied, bet);
+	        mediator.registerChallenge(c);
+
+	        System.out.println("Desafio enviado. Pendiente de validacion por un administrador.");
+		}else{
+			System.out.println("Jugador sin personaje.");
+		}
+		System.out.println("Pulse ENTER para continuar.");
+		sc.nextLine();
     }
 }

@@ -1,11 +1,14 @@
 
 package domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Hugo Martínez González
  */
-public abstract class Ability implements Describable{
+public abstract class Ability implements Describable, Serializable{
+	private static final long serialVersionUID = 1L;
 	private final String name;
         private final String description;
 	private final int attackValue;

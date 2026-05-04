@@ -24,6 +24,9 @@ public class Vampire extends GameCharacter {
     }
 
     public void setBloodPoints(int blod){
+        if (blod>10){
+            this.bloodPoints=10;
+        }
         this.bloodPoints=blod;
     }
     /**

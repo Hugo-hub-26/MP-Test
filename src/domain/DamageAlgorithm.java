@@ -10,7 +10,7 @@ import java.util.Iterator;
  * @author Ignacio Jerónimo Martín i.jeronimo.2024@alumnos.urjc.es
  */
 public class DamageAlgorithm implements Algorithm{
-
+private int type;
 	@Override
 	public int execute(GameCharacter c) {
 
@@ -36,8 +36,15 @@ public class DamageAlgorithm implements Algorithm{
                 if (((Vampire) c).getBloodPoints()>=5){ 
 
                 dmg+=2;
-                ((Vampire) c).setBloodPoints(((Vampire) c).getBloodPoints()-5);
+                }
+                if (((Vampire) c).getBloodPoints()<((Vampire) c).getAbility().getBloodValue()){
 
+                    dmg-= c.getAbility().getAttackValue();
+                
+                }
+                else {
+                ((Vampire) c).setBloodPoints(((Vampire) c).getBloodPoints()
+                -((Vampire) c).getAbility().getBloodValue());
                 }
             }
 
@@ -47,15 +54,23 @@ public class DamageAlgorithm implements Algorithm{
         Iterator<Strength> it = c.getStrength().values().iterator();
         while (it.hasNext()) {
             // dmg+=((Strength) it.next()).getValue();
+            if (it.next().getType()==type){
             dmg+=it.next().getValue();
+            }
         }
         Iterator<Weakness> it1 = c.getWeakness().values().iterator();
         while (it1.hasNext()) {
             // dmg+=((Strength) it.next()).getValue();
+            if(it1.next().getType()==type){
             dmg-=it1.next().getValue();
+            }
+
         }
         
         return dmg;
+    }
+    public DamageAlgorithm (int type){
+        this.type=type;
     }
 	}
 	

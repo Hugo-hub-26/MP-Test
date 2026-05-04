@@ -37,6 +37,18 @@ public class Ghoul implements Minion{
     public int getHealth() {
         return health;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setDependence(int dependence) {
+        this.dependence = dependence;
+    }
     
     
 }

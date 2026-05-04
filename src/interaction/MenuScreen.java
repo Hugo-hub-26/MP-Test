@@ -48,10 +48,11 @@ Seleccione una de las siguientes opciones:
 a) Lanzar desafio
 b) Aceptar desafio
 c) Registrar personaje
-d) Editar personaje
+d) Editar armas/armaduras del personaje
 e) Consultar clasificacion
-f) Darse de baja
-g) Salir
+f) Dar de baja personaje
+g) Darse de baja
+h) Salir
             """);
 		}
 

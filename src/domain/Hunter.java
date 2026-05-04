@@ -7,10 +7,17 @@ package domain;
  * @author Hugo Martínez González
  */
 public class Hunter extends GameCharacter {
-    private final int attitude = 3;
+    private int attitude = 3;
 
     public int getAttitude() {
         return attitude;
+    }
+
+    public void setAttitude(int attitude) {
+        if (attitude<0){
+            this.attitude = 0;            
+        } 
+        this.attitude = attitude;
     }
     
     @Override
