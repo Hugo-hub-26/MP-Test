@@ -5,10 +5,13 @@
 package command;
 
 import control.GameContext;
+import control.UserManager;
 import domain.Armor;
 import domain.Describable;
 import domain.Discipline;
+import domain.EditGameCharacter;
 import domain.Gift;
+import domain.HunterEditCharacter;
 import domain.Player;
 import domain.Strength;
 import domain.Weakness;
@@ -24,6 +27,7 @@ import java.util.Scanner;
  */
 public class EditCharacterCommand implements Command{
     private final GameContext context;
+    private final UserManager um;
     private HashMap<String,Discipline> discipline;
     private HashMap<String,Gift> gift;
     private HashMap<String,Will> will;
@@ -32,7 +36,7 @@ public class EditCharacterCommand implements Command{
     private HashMap<String,Strength> strength; 
     private HashMap<String,Weakness> weakness; 
 
-    public EditCharacterCommand(GameContext context) {
+    public EditCharacterCommand(GameContext context, UserManager um) {
         this.context = context;
         this.discipline = context.getCatalog().getDiscipline();
         this.gift = context.getCatalog().getGift();
@@ -41,6 +45,7 @@ public class EditCharacterCommand implements Command{
         this.weapon = context.getCatalog().getWeapon();
         this.strength = context.getCatalog().getStrength();
         this.weakness = context.getCatalog().getWeakness();
+        this.um = um;
     }
 	
     @Override
@@ -52,15 +57,17 @@ public class EditCharacterCommand implements Command{
                     System.out.println("0) No cambiar nada");
                     System.out.println("1) La armadura");
                     System.out.println("2) Las armas");
-                    election = requestNumber("Escoge",0,2,context.getScanner());        
+                    election = requestNumber("Escoge",0,2,context.getScanner());  
+                    HunterEditCharacter hed = new HunterEditCharacter(gift, armor, weapon, strength, weakness);
                     if (election==1){
-                        
+                        hed.changePrincipalEquipment(pl.getGameCharacter(), context.getScanner(), true);
+                    }else{
+                        hed.changePrincipalEquipment(pl.getGameCharacter(), context.getScanner(), false);  
                     }
                 }while (election!=0);
+            } else{
+                
             }
-            
-        
-        
         }
         
     protected int requestNumber(String message, int min, int max, Scanner sc){
