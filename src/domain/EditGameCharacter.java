@@ -52,7 +52,98 @@ public abstract class EditGameCharacter {
     }
     
     public void changeMinion(GameCharacter characterr, Scanner sc){
+        System.out.println("Escoge que quieres modificar");
+        System.out.println("0) No cambiar nada");
+        System.out.println("1) Crear un nuevo esbirro");
+        System.out.println("2) Modificar algo del esbirro actual");
+        int election =0;
+        election = requestNumber("Esperando respuesta",0,2,sc);
+        switch (election){
+            case 0:{
+                System.out.println("Terminado");
+                break;
+            }
+            case 1:{
+                
+            }
+            case 2:{
+                if (characterr.getMinion() instanceof Demon demonion) {
+                    changeDemon(demonion,sc);
+                } else if (characterr.getMinion() instanceof Ghoul ghoul) {
+                    changeGhoul(ghoul,sc);
+                }else if (characterr.getMinion() instanceof Human human) {
+                    changeHuman(human,sc);
+                }else {
+                    System.out.println("No tienes ningun tipo de esbirro");
+                }
+                break;
+            }
+        }
+    }
+    
+    protected void changeDemon(Demon demonion, Scanner sc){
+        System.out.println("Escoge que quieres modificar");
+        System.out.println("0) No cambiar nada");
+        System.out.println("1) Cambiar el nombre del demonio");
+        System.out.println("2) Cambiar la salud del demonio");
+        System.out.println("3) Cambiar el pacto del demonio");      
+        System.out.println("4) Cambiar el conjunto de esbirros del demonio");
+    }
+    
+    protected void changeGhoul(Ghoul ghoul, Scanner sc){
+        System.out.println("Escoge que quieres modificar");
+        System.out.println("0) No cambiar nada");
+        System.out.println("1) Cambiar el nombre del ghoul");
+        System.out.println("2) Cambiar la salud del ghoul");
+        System.out.println("3) Cambiar la dependencia del ghoul");
+        int election =0;
+        election = requestNumber("Escoge", 0,3,sc);
+        switch (election){
+            case 0:{
+                System.out.println("Terminado");
+                break;
+            }
+            case 1:{
+                ghoul.setName(requestString("Elige el nombre del ghoul", sc));
+                break;
+            }
+            case 2:{
+                ghoul.setHealth(requestNumber("Elige la salud del ghoul",1,3,sc));    
+                break;
+            }
+            case 3:{
+                ghoul.setDependence(requestNumber("Elige la dependencia del ghoul", 1,5,sc));
+                break;
+            }
+        }          
+    }
         
+    protected void changeHuman(Human human, Scanner sc){
+        System.out.println("Escoge que quieres modificar");
+        System.out.println("0) No cambiar nada");
+        System.out.println("1) Cambiar el nombre del humano");
+        System.out.println("2) Cambiar la salud del humano");
+        System.out.println("3) Cambiar la lealtad del humano");
+        int election =0;
+        election = requestNumber("Escoge", 0,3,sc);
+        switch (election){
+            case 0:{
+                System.out.println("Terminado");
+                break;
+            }
+            case 1:{
+                human.setName(requestString("Elige el nombre del humano", sc));
+                break;
+            }
+            case 2:{
+                human.setHealth(requestNumber("Elige la salud del humano",1,3,sc));    
+                break;
+            }
+            case 3:{
+                String[] loyalty = {"ALTA", "MEDIA", "BAJA"};
+                human.setLoyalty(loyalty[requestNumber("Elige la lealtad del esbirro \n0)ALTA \n1)MEDIA \n2) BAJA", 0,2,sc)]);
+            }
+        }       
     }
     
     public void changeModifier(GameCharacter characterr, Scanner sc, boolean mode){      
@@ -211,4 +302,3 @@ public abstract class EditGameCharacter {
         return inventary.toArray(new String[0]);
     }
 }
-
