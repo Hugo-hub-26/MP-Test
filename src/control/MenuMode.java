@@ -59,7 +59,7 @@ public class MenuMode implements Mode{
 		commands.put('a', new SendChallengeCommand(context, userManager, challengeMediator));
 		commands.put('b', new AcceptChallengeCommand(context, userManager, challengeMediator));
 		commands.put('c', new RegisterCharacterCommand(context));
-		commands.put('d', new EditCharacterCommand());
+		commands.put('d', new EditCharacterCommand(context));
 		commands.put('e', new CheckRankingCommand(context, userManager, authManager, challengeMediator));
 		commands.put('f', new UnregisterCommand(context, userManager, authManager, challengeMediator));
 		commands.put('g', new ExitCommand(context));
@@ -92,7 +92,6 @@ public class MenuMode implements Mode{
 					"Ningun comando asociado con esta opcion: " + option
 			);
 		}
-
 		command.execute();
 		return context.getNextMode();
 	}
