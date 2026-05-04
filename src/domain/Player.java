@@ -17,7 +17,7 @@ public class Player extends User implements Serializable{
     private final int registerNumber;
 	private int gold;
 	private GameCharacter charac;
-	boolean blocked;
+	private boolean blocked;
 	
 	public Player(String n, String nck, String p){
 		super(n, nck, p);
@@ -60,8 +60,11 @@ public class Player extends User implements Serializable{
 		return blocked;
 	}
 
-    public GameCharacter getCharac() {
-        return charac;
-    }
-        
+	public Object getCharacter() {
+		return charac;
+	}
+
+	public void setCharacter(GameCharacter character) {
+		this.charac = character;
+	}
 }
