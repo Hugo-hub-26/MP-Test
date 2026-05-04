@@ -10,10 +10,8 @@ import control.GameContext;
 import control.UserManager;
 import domain.Challenge;
 import domain.ChallengeMediator;
-import domain.HunterEditCharacter;
 import domain.Player;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  *
@@ -71,27 +69,6 @@ b) Rechazar
 
             if (c == 'a') {
                 ch.acceptByPlayer();
-                System.out.println("¿Quieres editar las armas y armaduras principales de tu personaje?");
-                System.out.println("0) No");
-                System.out.println("1) Si");
-                int election = requestNumber("Escoge",0,1,context.getScanner());
-                if (election==1){
-                    HunterEditCharacter editor = new HunterEditCharacter(context.getCatalog().getGift(),context.getCatalog().getArmor(), context.getCatalog().getWeapon(),context.getCatalog().getStrength(),context.getCatalog().getWeakness());
-                    int election1;
-                    do{
-                            System.out.println("¿Que quieres editar?");
-                            System.out.println("0) No hacer nada");
-                            System.out.println("1) Armaduras");                        
-                            System.out.println("2) Armas");           
-                            election1 = requestNumber("Escoge",0,2,context.getScanner());
-                            if (election1==1){
-                                editor.changePrincipalEquipment(context.getCharacter2(), context.getScanner(), true);
-                            } else if (election1==2){
-                                editor.changePrincipalEquipment(context.getCharacter2(), context.getScanner(), false);
-                            }                        
-                    }while(election1!=0);
-                }
-
                 // Aquí ENTRAS al combate:
                 context.setNextMode(new BattleMode(context, authManager, userManager, mediator, ch));
                 return;
@@ -100,26 +77,20 @@ b) Rechazar
 			if (c == 'b') {
                 ch.rejectByPlayer();
                 System.out.println("Desafío rechazado.\n");
+				int penalty = (int) (0.1 * ch.getBetGold());
+
+        		Player defied = ch.getDefiedPlayer();
+        		Player defying = ch.getDefyingPlayer();
+
+		        defied.setGold(Math.max(0, defied.getGold() - penalty));
+		        defying.setGold(Math.max(0, defying.getGold() - penalty));
+
+		        userManager.save(); // persistimos el cambio de oro
                 return;
             }
 
             System.out.println("Opción inválida.\n");
         }
-    }
-    protected int requestNumber(String message, int min, int max, Scanner sc){
-        int number =0;
-        boolean proof;
-        do {
-            proof =false;
-            try {
-                System.out.println(message + "(" + min + "-" + max + ")");
-                number = Integer.parseInt(sc.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Error: Introduce un numero valido.");
-                proof = true;
-            }
-        } while (number < min || number > max || proof); 
-        return number;               
     }
 }
 	
