@@ -163,7 +163,44 @@ private void resolveCombat() {
     challenge.finish();
 
     // 6) Persistencia
+    
     userManager.save();
 	challenge.finish();
+        
 	}
+
+    private void saveBattleToHistory(Player p1, Player p2, Player winner, int gold, GameContext result) {
+    try (java.io.FileWriter fw = new java.io.FileWriter("data/combat_history.txt", true);
+         java.io.PrintWriter out = new java.io.PrintWriter(fw)) {
+        
+        out.println("--- REGISTRO DE COMBATE ---");
+        out.println("Fecha: " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+        out.println("Desafiante: " + p1.getNick());
+        out.println("Desafiado: " + p2.getNick());
+        out.println("Vencedor: " + (winner != null ? winner.getNick() : "EMPATE"));
+        out.println("Oro Ganado: " + gold);
+        
+        // Asumiendo que result tiene el número de rondas
+        out.println("Rondas empleadas: " + result.getRounds()); 
+
+        // Lógica de esbirros vivos
+        StringBuilder esbirrosVivos = new StringBuilder("Contendientes con esbirros vivos: ");
+        boolean algunoVivo = false;
+        
+        if (hasAliveMinions(p1.getGameCharacter())) {
+            esbirrosVivos.append(p1.getNick()).append(" ");
+            algunoVivo = true;
+        }
+        if (hasAliveMinions(p2.getGameCharacter())) {
+            esbirrosVivos.append(p2.getNick());
+            algunoVivo = true;
+        }
+        
+        out.println(algunoVivo ? esbirrosVivos.toString() : "Ningún esbirro quedó en pie.");
+        out.println("---------------------------\n");
+        
+    } catch (java.io.IOException e) {
+        System.err.println("Error al guardar el historial de combate: " + e.getMessage());
+    }
+}
 }
