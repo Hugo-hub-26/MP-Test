@@ -4,6 +4,7 @@
  */
 package command;
 
+import control.AuthenticationManager;
 import control.BattleMode;
 import control.GameContext;
 import control.UserManager;
@@ -21,12 +22,14 @@ public class AcceptChallengeCommand implements Command{
 	private final GameContext context;
 	private final UserManager userManager;
 	private final ChallengeMediator mediator;
+	private final AuthenticationManager authManager;
 
 	
-	public AcceptChallengeCommand(GameContext context, UserManager userManager, ChallengeMediator mediator) {
+	public AcceptChallengeCommand(GameContext context, UserManager userManager, AuthenticationManager authManager, ChallengeMediator mediator) {
         this.context = context;
         this.userManager = userManager;
         this.mediator = mediator;
+		this.authManager = authManager;
     }
 
 	@Override
@@ -63,7 +66,7 @@ b) Rechazar
             if (c == 'a') {
                 ch.acceptByPlayer();
                 // Aquí ENTRAS al combate:
-                context.setNextMode(new BattleMode(/* pasa lo que necesite tu BattleMode */ ch));
+                context.setNextMode(new BattleMode(context, authManager, userManager, mediator, ch));
                 return;
             }
 

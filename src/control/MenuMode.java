@@ -57,7 +57,7 @@ public class MenuMode implements Mode{
 		commands = new HashMap<>();
 
 		commands.put('a', new SendChallengeCommand(context, userManager, challengeMediator));
-		commands.put('b', new AcceptChallengeCommand(context, userManager, challengeMediator));
+		commands.put('b', new AcceptChallengeCommand(context, userManager, authManager, challengeMediator));
 		commands.put('c', new RegisterCharacterCommand(context));
 		commands.put('d', new EditCharacterCommand());
 		commands.put('e', new CheckRankingCommand(context, userManager, authManager, challengeMediator));
