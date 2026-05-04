@@ -58,6 +58,11 @@ public class LaunchChallengeCommand implements Command{
 	            return;
 	        }
 
+			if ((userManager.findByNick(rivalNick).equals(defying))) {
+	            System.out.println("No puedes desafiarte a ti mismo.");
+	            return;
+	        }
+
 	        Player defied = (Player) userManager.findByNick(rivalNick);
 
 			if (bet > defied.getGold()){
