@@ -5,6 +5,8 @@
 package domain;
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  *
@@ -18,6 +20,7 @@ public class Player extends User implements Serializable{
 	private int gold;
 	private GameCharacter charac;
 	private boolean blocked;
+	private Instant lastChallengeTime;
 	
 	public Player(String n, String nck, String p){
 		super(n, nck, p);
@@ -26,6 +29,19 @@ public class Player extends User implements Serializable{
    		charac = null;
 		blocked = false;
 	}
+	
+	public void markChallengeTime() {
+    	this.lastChallengeTime = Instant.now();
+	}
+	
+	public boolean canBeChallenged() {
+    	if (lastChallengeTime == null) {
+        	return true; // nunca ha combatido
+    	}
+	    Duration elapsed = Duration.between(lastChallengeTime, Instant.now());
+	    return elapsed.toHours() >= 24;
+	}
+
 	
 	public int getRegisterNumber() {
    		return registerNumber;

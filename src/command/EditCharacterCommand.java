@@ -7,7 +7,6 @@ package command;
 import control.GameContext;
 import control.UserManager;
 import domain.Armor;
-import domain.Describable;
 import domain.Discipline;
 import domain.Gift;
 import domain.HunterEditCharacter;
