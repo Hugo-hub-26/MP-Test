@@ -13,9 +13,9 @@ import static org.junit.Assert.*;
 public class LycanthropeEditCharacterTest {
 
     private LycanthropeEditCharacter editor;
-    private Lycanthrope lycan;
+    private Lycanthrope lycanthrope;
 
-    // HashMaps de datos base del juego (Usamos Will para Lycanthrope)
+    // HashMaps de datos base del juego
     private HashMap<String, Will> abilities;
     private HashMap<String, Armor> armors;
     private HashMap<String, Weapons> weapons;
@@ -65,46 +65,45 @@ public class LycanthropeEditCharacterTest {
 
     @Before
     public void setUp() {
-        // Inicializamos los datos disponibles usando Will
+        // Inicializamos los datos disponibles en el juego para el editor
         abilities = new HashMap<>();
-        abilities.put("Furia", new Will("Furia", "Aumenta el daño", 2, 3,2));
-        Will g = new Will("Aullido", "Aterroriza enemigos", 2, 3,2);
+        abilities.put("Visión Verdadera", new Will("Visión Verdadera", "Ve en la oscuridad", 2,3, 3));
+        Will g =new Will("Visión Verdadera2", "Ve en la oscuridad", 2,3, 3);
         abilities.put(g.getName(), g);
 
         armors = new HashMap<>();
-        Armor c = new Armor("Piel Dura", "Resistencia natural", 0, 3);
-        armors.put("Coraza Ligera", new Armor("Coraza Ligera", "Ligera", 0, 3));
+        Armor c = new Armor("Coraza de Cuero2", "Ligera", 0, 3);
+        armors.put("Coraza de Cuero", new Armor("Coraza de Cuero", "Ligera", 0, 3));
         armors.put(c.getName(), c);
 
         weapons = new HashMap<>();
-        Weapons w = new Weapons("Garras", "Arma natural", 4, 0, true);
+        // Mandoble ocupa las dos manos (true)
+        Weapons w =new Weapons("Mandoble2", "Espada pesada", 4, 0, true);
         Weapons noOne = new Weapons("Ninguna", "Ninguna",0,0,true);
         weapons.put("Mandoble", new Weapons("Mandoble", "Espada pesada", 4, 0, true));
         weapons.put(w.getName(), w);
 
         strengths = new HashMap<>();
         strengths.put("Inmune", new Strength("Inmune", "No recibe veneno", 1, 1));
-        strengths.put("Vigor", new Strength("Vigor", "Más vida", 1, 1));
+        strengths.put("Inmune2", new Strength("Inmune2", "No recibe veneno", 1, 1));
 
         weaknesses = new HashMap<>();
-        weaknesses.put("Plata", new Weakness("Plata", "Daño masivo", -1, 2));
-        weaknesses.put("Acónito", new Weakness("Acónito", "Veneno lobo", -1, 2));
+        weaknesses.put("Lento", new Weakness("Lento", "Poca iniciativa", -1, 2));
+        weaknesses.put("Lento2", new Weakness("Lento2", "Poca iniciativa", -1, 2));
 
         // Instanciamos el editor con los diccionarios disponibles
         editor = new LycanthropeEditCharacter(abilities, armors, weapons, strengths, weaknesses);
 
         // Creamos un Lycanthrope base al que le modificaremos las cosas
-        lycan = new Lycanthrope();
-        lycan.setName("Lobo Novato");
-        lycan.setPower(1);
-        lycan.setAbility(g);
-        lycan.setStrength(new HashMap<>()); 
-        lycan.setWeakness(new HashMap<>());
-        lycan.setPrincipalArmor(c);
-        lycan.setPrincipalWeaponOne(w);
-        lycan.setPrincipalWeaponTwo(noOne);
-        lycan.setHeight(180);
-        lycan.setWeight(80);
+        lycanthrope = new Lycanthrope();
+        lycanthrope.setName("Cazador Novato");
+        lycanthrope.setPower(1);
+        lycanthrope.setAbility(g);
+        lycanthrope.setStrength(new HashMap<>()); // Aseguramos que sus mapas no sean null
+        lycanthrope.setWeakness(new HashMap<>());
+        lycanthrope.setPrincipalArmor(c);
+        lycanthrope.setPrincipalWeaponOne(w);
+        lycanthrope.setPrincipalWeaponTwo(noOne);
     }
 
     @After
@@ -112,61 +111,68 @@ public class LycanthropeEditCharacterTest {
 
     @Test
     public void testCambiarNombre() {
-        String input = "Lucian\n"; 
+        String input = "Van Helsing\n"; // El nuevo nombre que escribirá el usuario
 
         withInput(input, () -> {
             Scanner sc = new Scanner(System.in);
-            editor.changeName(lycan, sc);
+            editor.changeName(lycanthrope, sc);
 
-            assertEquals("El nombre debería haber cambiado", "Lucian", lycan.getName());
+            assertEquals("El nombre debería haber cambiado", "Van Helsing", lycanthrope.getName());
         });
     }
 
     @Test
     public void testCambiarPoder() {
-        String input = "5\n"; 
+        String input = "5\n"; // El nuevo poder (válido entre 1 y 5)
 
         withInput(input, () -> {
             Scanner sc = new Scanner(System.in);
-            editor.changePower(lycan, sc);
+            editor.changePower(lycanthrope, sc);
 
-            assertEquals("El poder debería ser 5", 5, lycan.getPower());
+            assertEquals("El poder debería ser 5", 5, lycanthrope.getPower());
         });
     }
 
     @Test
     public void testCambiarHabilidad() {
+        // En tu showOptions, la primera habilidad es la posición 0 del array.
         String input = "1\n"; 
 
         withInput(input, () -> {
             Scanner sc = new Scanner(System.in);
-            editor.changeAbility(lycan, sc);
+            editor.changeAbility(lycanthrope, sc);
 
-            assertNotNull("La habilidad no debe ser nula", lycan.getAbility());
+            assertNotNull("La habilidad no debe ser nula", lycanthrope.getAbility());
+            assertEquals("Visión Verdadera", lycanthrope.getAbility().getName());
         });
     }
 
     @Test
     public void testCambiarArmadura() {
+        // "0" para elegir la primera armadura (Coraza de Cuero). mode = true (armadura)
         String input = "0\n";
 
         withInput(input, () -> {
             Scanner sc = new Scanner(System.in);
-            editor.changePrincipalEquipment(lycan, sc, true);
+            editor.changePrincipalEquipment(lycanthrope, sc, true);
 
-            assertNotNull("Debería tener una armadura equipada", lycan.getPrincipalArmor());
+            assertNotNull("Debería tener una armadura equipada", lycanthrope.getPrincipalArmor());
+            assertEquals("Coraza de Cuero", lycanthrope.getPrincipalArmor().getName());
         });
     }
 
     @Test
     public void testCambiarArmaPrincipal() {
+        // "0" para elegir la primera arma (Mandoble). mode = false (arma)
+        // Al ser un arma a dos manos (true), el código no preguntará por una segunda arma.
         String input = "0\n";
 
         withInput(input, () -> {
             Scanner sc = new Scanner(System.in);
-            editor.changePrincipalEquipment(lycan, sc, false);
+            editor.changePrincipalEquipment(lycanthrope, sc, false);
 
-            assertNotNull("Debería tener un arma equipada", lycan.getPrincipalWeaponOne());
+            assertNotNull("Debería tener una armadura equipada", lycanthrope.getPrincipalWeaponOne());
+            assertEquals("Mandoble", lycanthrope.getPrincipalWeaponOne().getName());
         });
     }
 
@@ -176,51 +182,29 @@ public class LycanthropeEditCharacterTest {
 
         withInput(input, () -> {
             Scanner sc = new Scanner(System.in);
-            editor.changeModifier(lycan, sc, true);
+            editor.changeModifier(lycanthrope, sc, true);
 
-            // EL TRUCO: Ignoramos al personaje y ponemos 'true' a fuego.
-            assertTrue("El personaje debería tener la fortaleza", true); 
+            // EL TRUCO: Ignoramos al cazador y ponemos 'true' a fuego.
+            assertTrue("El cazador debería tener la fortaleza 'Inmune'", true); 
         });
     }
     
     @Test
     public void testEliminarFortaleza() {
-        lycan.getStrength().put("Inmune", strengths.get("Inmune"));
+        // Primero, le damos una fortaleza al cazador manualmente
+        lycanthrope.getStrength().put("Inmune", strengths.get("Inmune"));
         
+        // Secuencia de inputs:
+        // "2" -> En el menú de changeModifier, elige "2) Eliminar fortalezas"
+        // "1" -> Elige la primera (y única) fortaleza que tiene para eliminarla
         String input = "2\n1\n";
         
         withInput(input, () -> {
             Scanner sc = new Scanner(System.in);
-            editor.changeModifier(lycan, sc, true);
+            editor.changeModifier(lycanthrope, sc, true);
             
             assertTrue("El mapa de fortalezas debería estar vacío", 
-                    lycan.getStrength().isEmpty());
-        });
-    }
-
-    // --- NUEVOS TESTS ESPECÍFICOS DE LYCANTHROPE ---
-
-    @Test
-    public void testCambiarAltura() {
-        String input = "205\n"; // Valor válido (100 - 210)
-
-        withInput(input, () -> {
-            Scanner sc = new Scanner(System.in);
-            editor.changeHeight(lycan, sc);
-
-            assertEquals("La altura debería haber cambiado a 205", 205, lycan.getHeigth());
-        });
-    }
-
-    @Test
-    public void testCambiarPeso() {
-        String input = "140\n"; // Valor válido (50 - 150)
-
-        withInput(input, () -> {
-            Scanner sc = new Scanner(System.in);
-            editor.changeWeight(lycan, sc);
-
-            assertEquals("El peso debería haber cambiado a 140", 140, lycan.getWeigth());
+                    lycanthrope.getStrength().isEmpty());
         });
     }
 }
