@@ -38,7 +38,7 @@ public class UserManagerTest {
     @Before
     public void setUp() {
         instance = new UserManager();
-        testUser = new Player("Miguel", "miguel_test", "pass123", null);
+        testUser = new Player("Miguel", "miguel_test", "pass123");
     }
     
     @After
