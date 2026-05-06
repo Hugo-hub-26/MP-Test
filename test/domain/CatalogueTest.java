@@ -4,6 +4,7 @@
  */
 package domain;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,9 +33,8 @@ public class CatalogueTest {
     }
     
     @Before
-    public void setUp() {
+    public void setUp() throws FileNotFoundException {
         instance = new Catalogue();
-        instance.load(); 
     }
     
     @After
