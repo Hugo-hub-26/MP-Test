@@ -39,7 +39,7 @@ public class HunterCharacterBuilderTest {
 	}
 
 	@Test
-public void hunterBuilder_creaHunterBasicoCorrectamente() {
+	public void hunterBuilder_creaHunterBasicoCorrectamente() {
 	// 1. Preparación de datos (HashMaps)
         HashMap<String, Gift> abilities = new HashMap<>();
         abilities.put("Fuego", new Gift("Fuego", "Muy duro", 2, 3));
