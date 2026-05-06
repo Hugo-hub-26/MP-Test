@@ -34,6 +34,7 @@ public class DamageAlgorithmTest {
     
     @Before
     public void setUp() {
+        // Inicializamos el algoritmo antes de cada prueba
         instance = new DamageAlgorithm();
     }
     
@@ -50,20 +51,19 @@ public class DamageAlgorithmTest {
     public void testExecute_BasePowerOnly() {
         System.out.println("execute - Solo Poder Base");
         
-        // Arrange: Creamos un personaje "falso" (Stub) que solo devuelve 3 de poder
-        GameCharacter c = new GameCharacter("TestChar", 5, 3, null, 
-                new HashMap<>(), new HashMap<>(), null, 
-                new LinkedList<>(), new LinkedList<>(), null, null) {
-            @Override
-            public int getPower() {
-                return 3; 
-            }
-        };
+        // Arrange: Usamos el Builder para crear un personaje básico limpio
+        Ability habilidadBasica = new Will("Concentración", 1, 1, 1);
+        
+        GameCharacter c = new HunterCharacterBuilder()
+                .withName("Cazador Novato")
+                .withBaseStats(5, 3) // Salud = 5, Poder Base = 3
+                .withAbility(habilidadBasica)
+                .build();
 
-        //Ejecutamos el algoritmo
+        // Ejecutamos el algoritmo
         int result = instance.execute(c);
         
-        // Assert: El daño esperado debe ser exactamente su poder base
+        // El daño esperado debe ser exactamente su poder base
         assertEquals("El daño debe ser igual al poder base si no hay armas ni modificadores", 3, result);
     }
 
@@ -75,27 +75,25 @@ public class DamageAlgorithmTest {
     public void testExecute_WithWeapons() {
         System.out.println("execute - Con Armas");
         
-        // Arrange: Preparamos un arma con 2 de ataque
+        // Preparamos un arma con 2 puntos de ataque
         HashMap<String, Weapons> armas = new HashMap<>();
-        Weapons espada = new Weapons("Espada Larga", 2, 0, 1); // Nombre, Atq, Def, Manos
-        armas.put("Espada", espada);
+        Weapons espada = new Weapons("Espada Larga", 2, 0, 1); // Asumiendo: Nombre, Atq, Def, Manos
+        armas.put("Espada Larga", espada);
         
-        // Creamos el personaje Stub devolviendo 4 de poder base y el mapa de armas
-        GameCharacter c = new GameCharacter("TestCharWeapons", 5, 4, null, 
-                new HashMap<>(), armas, null, 
-                new LinkedList<>(), new LinkedList<>(), null, null) {
-            @Override
-            public int getPower() { return 4; }
-            
-            @Override
-            public HashMap<String, Weapons> getWeapon() { return armas; }
-        };
+        Ability habilidadBasica = new Will("Concentración", 1, 1, 1);
+        
+        // Construimos el personaje inyectándole el arma a través del builder
+        GameCharacter c = new HunterCharacterBuilder()
+                .withName("Cazador Armado")
+                .withBaseStats(5, 4) // Poder Base = 4
+                .withAbility(habilidadBasica)
+                .withWeapons(armas)  // Inyección del arma
+                .build();
 
-        //Ejecutamos el cálculo (Poder Base 4 + Arma 2 = 6)
+        // Ejecutamos el cálculo (Poder Base 4 + Arma 2 = 6)
         int expResult = 6; 
         int result = instance.execute(c);
         
-        // Assert
         assertEquals("El daño debe ser la suma del poder base y el ataque del arma", expResult, result);
     }
 
@@ -109,24 +107,23 @@ public class DamageAlgorithmTest {
         
         // Arrange: Preparamos una fortaleza que sume 1 al ataque
         LinkedList<Strength> fortalezas = new LinkedList<>();
-        Strength furia = new Strength("Furia", 1); // Asumiendo constructor (Nombre, ValorAtaque)
+        Strength furia = new Strength("Furia", 1); // Asumiendo: Nombre, ModificadorAtaque
         fortalezas.add(furia);
         
-        GameCharacter c = new GameCharacter("TestCharStrengths", 5, 3, null, 
-                new HashMap<>(), new HashMap<>(), null, 
-                fortalezas, new LinkedList<>(), null, null) {
-            @Override
-            public int getPower() { return 3; }
-            
-            @Override
-            public LinkedList<Strength> getStrength() { return fortalezas; }
-        };
+        Ability habilidadBasica = new Will("Concentración", 1, 1, 1);
+        
+        // Construimos el personaje inyectándole la fortaleza
+        GameCharacter c = new HunterCharacterBuilder()
+                .withName("Cazador Fuerte")
+                .withBaseStats(5, 3) // Poder base = 3
+                .withAbility(habilidadBasica)
+                .withStrengths(fortalezas) // Inyección de la fortaleza
+                .build();
 
-        //Ejecutamos el cálculo (Poder Base 3 + Fortaleza 1 = 4)
+        // Ejecutamos el cálculo (Poder Base 3 + Fortaleza 1 = 4)
         int expResult = 4;
         int result = instance.execute(c);
         
-        // Assert
         assertEquals("El daño debe incluir los modificadores activos de las fortalezas", expResult, result);
     }
 }
