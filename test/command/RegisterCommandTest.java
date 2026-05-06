@@ -4,6 +4,17 @@
  */
 package command;
 
+import control.AuthenticationManager;
+import control.ChallengeManager;
+import control.GameContext;
+import control.UserManager;
+import domain.Catalogue;
+import domain.ChallengeMediator;
+import domain.User;
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Scanner;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,16 +47,44 @@ public class RegisterCommandTest {
 	public void tearDown() {
 	}
 
-	/**
-	 * Test of execute method, of class RegisterCommand.
-	 */
-	@Test
-	public void testExecute() {
-		System.out.println("execute");
-		RegisterCommand instance = null;
-		instance.execute();
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-	
+    private void withInput(String data, Runnable test) {
+        InputStream backup = System.in;
+        try {
+            System.setIn(new ByteArrayInputStream(data.getBytes()));
+            test.run();
+        } finally {
+            System.setIn(backup);
+        }
+    }
+
+    @Test
+    public void registerCommand_registraUsuarioCorrectamente() {
+
+        String input =
+                "test\n" +
+                "test\n" +
+                "password\n";
+
+        withInput(input, new Runnable() {
+			@Override
+			public void run() {
+				UserManager userManager = new UserManager();
+				AuthenticationManager authManager = new AuthenticationManager(userManager);
+				Catalogue c = null;
+				try {
+					c = new Catalogue();
+				} catch (FileNotFoundException ex) {
+					System.getLogger(RegisterCommandTest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+				}
+				GameContext context = new GameContext(new Scanner(System.in), c);
+				
+				RegisterCommand command = new RegisterCommand(context, userManager, authManager, new ChallengeMediator(new ChallengeManager()));
+				
+				command.execute();
+				
+				User u = userManager.findByNick("ignacio123");
+				assertNotNull("El usuario debería haberse registrado", u);
+			}
+		});
+    }
 }
