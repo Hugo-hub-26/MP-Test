@@ -5,7 +5,6 @@
 package domain;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
