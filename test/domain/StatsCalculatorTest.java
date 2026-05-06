@@ -1,152 +1,86 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
- */
 package domain;
 
 import control.GameContext;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Ignacio Jerónimo Martín i.jeronimo.2024@alumnos.urjc.es
- */
 public class StatsCalculatorTest {
-	
-	public StatsCalculatorTest() {
-	}
-	
-	@BeforeClass
-	public static void setUpClass() {
-	}
-	
-	@AfterClass
-	public static void tearDownClass() {
-	}
-	
-	@Before
-	public void setUp() {
-	}
-	
-	@After
-	public void tearDown() {
-	}
 
-	/**
-	 * Test of resetRounds method, of class StatsCalculator.
-	 */
-	@Test
-	public void testResetRounds() {
-		System.out.println("resetRounds");
-		StatsCalculator instance = null;
-		instance.resetRounds();
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+    public StatsCalculatorTest() {
+    }
 
-	/**
-	 * Test of getAndResetRounds method, of class StatsCalculator.
-	 */
-	@Test
-	public void testGetAndResetRounds() {
-		System.out.println("getAndResetRounds");
-		StatsCalculator instance = null;
-		int expResult = 0;
-		int result = instance.getAndResetRounds();
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+    @Before
+    public void setUp() {
+    }
 
-	/**
-	 * Test of resetMinionsAlive method, of class StatsCalculator.
-	 */
-	@Test
-	public void testResetMinionsAlive() {
-		System.out.println("resetMinionsAlive");
-		StatsCalculator instance = null;
-		instance.resetMinionsAlive();
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+    @After
+    public void tearDown() {
+    }
 
-	/**
-	 * Test of getAndResetMinionsAlive method, of class StatsCalculator.
-	 */
-	@Test
-	public void testGetAndResetMinionsAlive() {
-		System.out.println("getAndResetMinionsAlive");
-		StatsCalculator instance = null;
-		boolean expResult = false;
-		boolean result = instance.getAndResetMinionsAlive();
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+    /**
+     * Test determinista del método battle
+     */
+    @Test
+    public void testBattleDeterministic() {
 
-	/**
-	 * Test of calculatedamage method, of class StatsCalculator.
-	 */
-	@Test
-	public void testCalculatedamage() {
-		System.out.println("calculatedamage");
-		GameCharacter c = null;
-		StatsCalculator instance = null;
-		int expResult = 0;
-		int result = instance.calculatedamage(c);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+        // Crear personaje 1 (fuerte)
+        GameCharacter c1 = new Hunter();
+        c1.setName("Jugador1");
+        c1.setHealth(5);
+        c1.setMinionHealth(5);
 
-	/**
-	 * Test of calculatedefense method, of class StatsCalculator.
-	 */
-	@Test
-	public void testCalculatedefense() {
-		System.out.println("calculatedefense");
-		GameCharacter c = null;
-		StatsCalculator instance = null;
-		int expResult = 0;
-		int result = instance.calculatedefense(c);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+        // Crear personaje 2 (débil)
+        GameCharacter c2 = new Hunter();
+        c2.setName("Jugador2");
+        c2.setHealth(5);
+        c2.setMinionHealth(5);
 
-	/**
-	 * Test of calculatehealth method, of class StatsCalculator.
-	 */
-	@Test
-	public void testCalculatehealth() {
-		System.out.println("calculatehealth");
-		GameCharacter c = null;
-		StatsCalculator instance = null;
-		int[] expResult = null;
-		int[] result = instance.calculatehealth(c);
-		assertArrayEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+        // Crear contexto de juego
+        GameContext context = new GameContext();
+        context.setCharacter1(c1);
+        context.setCharacter2(c2);
 
-	/**
-	 * Test of battle method, of class StatsCalculator.
-	 */
-	@Test
-	public void testBattle() {
-		System.out.println("battle");
-		GameContext g = null;
-		StatsCalculator instance = null;
-		GameContext expResult = null;
-		GameContext result = instance.battle(g);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-	
+        // Crear StatsCalculator sobreescribiendo comportamiento
+        StatsCalculator calculator = new StatsCalculator(0) {
+
+            @Override
+            public int calculatedamage(GameCharacter c) {
+                if (c.getName().equals("Jugador1")) {
+                    return 10; // fuerte
+                } else {
+                    return 1; // débil
+                }
+            }
+
+            @Override
+            public int calculatedefense(GameCharacter c) {
+                if (c.getName().equals("Jugador1")) {
+                    return 10;
+                } else {
+                    return 1;
+                }
+            }
+
+            @Override
+            public int[] calculatehealth(GameCharacter c) {
+                return new int[]{5, 5}; // vida fija para ambos
+            }
+        };
+
+        // Ejecutar batalla
+        GameContext result = calculator.battle(context);
+
+        // Comprobaciones
+        assertNotNull(result);
+        assertFalse(result.isDraw());
+
+        // El ganador debe ser Jugador1
+        assertEquals("Jugador1", result.getCharacter1().getName());
+        assertEquals("Jugador2", result.getCharacter2().getName());
+
+        // Comprobar que hubo al menos una ronda
+        assertTrue(calculator.getAndResetRounds() > 0);
+    }
 }
