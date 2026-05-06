@@ -1,6 +1,7 @@
 package domain;
 
 import control.GameContext;
+import java.util.Scanner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,16 +30,18 @@ public class StatsCalculatorTest {
         GameCharacter c1 = new Hunter();
         c1.setName("Jugador1");
         c1.setHealth(5);
-        c1.setMinionHealth(5);
+		Minion m1 = new Human("name", 5, "loyalty", c1);
+		c1.setMinion(m1);
 
         // Crear personaje 2 (débil)
         GameCharacter c2 = new Hunter();
         c2.setName("Jugador2");
         c2.setHealth(5);
-        c2.setMinionHealth(5);
+		Minion m2 = new Human("name", 5, "loyalty", c1);
+        c2.setMinion(m2);
 
         // Crear contexto de juego
-        GameContext context = new GameContext();
+        GameContext context = new GameContext(new Scanner(System.in), null);
         context.setCharacter1(c1);
         context.setCharacter2(c2);
 
@@ -70,17 +73,23 @@ public class StatsCalculatorTest {
         };
 
         // Ejecutar batalla
-        GameContext result = calculator.battle(context);
+        GameContext result1 = calculator.battle(context);
+
+		context.setCharacter1(c1);
+        context.setCharacter2(c2);
 
         // Comprobaciones
-        assertNotNull(result);
-        assertFalse(result.isDraw());
+        assertNotNull(result1);
+        assertFalse(result1.getDraw());
 
         // El ganador debe ser Jugador1
-        assertEquals("Jugador1", result.getCharacter1().getName());
-        assertEquals("Jugador2", result.getCharacter2().getName());
+        assertEquals("Jugador1", result1.getCharacter1().getName());
+        assertEquals("Jugador2", result1.getCharacter2().getName());
+
 
         // Comprobar que hubo al menos una ronda
         assertTrue(calculator.getAndResetRounds() > 0);
     }
+
+	
 }
