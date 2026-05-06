@@ -92,9 +92,9 @@ public class VampireCharacterBuilderTest {
                 "0\n" +        // Esbirro (ninguno)
                 "0\n" +        // Fortaleza (ninguna)
                 "0\n" +        // Debilidad (ninguna)
-                "0\n" +        // Armadura
-                "1\n" +        // Arma principal
-                "1\n" +        // Segunda arma
+                "0\n" +        // Armadura (ninguna)
+                "1\n" +        // Arma principal (añade una)
+                "1\n" +        // Segunda arma (añade otra / sale)
                 "150\n";       // Edad del vampiro
 
         withInput(respuestas, () -> {
@@ -109,10 +109,33 @@ public class VampireCharacterBuilderTest {
             Vampire base = new Vampire();
             Vampire result = builder.gameCharacterBuilder(base);
 
-            assertNotNull(result);
+            // ASSERT: Datos básicos
+            assertNotNull("El personaje no debería ser nulo", result);
             assertEquals("Dracula", result.getName());
             assertEquals(4, result.getPower());
-            assertEquals(150, result.getAge()); // Verificamos la edad
+            assertEquals(150, result.getAge()); 
+
+            // ASSERT: Habilidad
+            assertNotNull("Debería tener una habilidad asignada", result.getAbility());
+            assertTrue("La habilidad de un vampiro debe ser tipo Discipline", result.getAbility() instanceof Discipline);
+            
+            // ASSERT: Equipamiento y Modificadores (Se marcó '0' para todo menos las armas)
+            assertTrue("No debería tener armaduras porque se introdujo 0", 
+                        result.getArmor() == null || result.getArmor().isEmpty());
+            
+            assertNotNull("La colección de armas debe estar inicializada", result.getWeapon());
+            assertFalse("Debería tener al menos un arma porque se introdujo 1", result.getWeapon().isEmpty());
+
+            assertTrue("No debería tener fortalezas", 
+                        result.getStrength() == null || result.getStrength().isEmpty());
+            
+            assertTrue("No debería tener debilidades", 
+                        result.getWeakness() == null || result.getWeakness().isEmpty());
+
+            // ASSERT: Esbirro (Si getMinion() devuelve null o una lista vacía)
+            assertTrue("No debería tener esbirros asignados", 
+                        result.getMinion() == null || 
+                        (result.getMinion() instanceof java.util.Collection && ((java.util.Collection<?>)result.getMinion()).isEmpty()));
         });
     }
 
@@ -142,12 +165,12 @@ public class VampireCharacterBuilderTest {
                 "Carmilla\n" +
                 "3\n" +
                 "1\n" +   // Elegimos segunda habilidad
-                "0\n" +
-                "0\n" +
-                "0\n" +
-                "0\n" +
-                "0\n" +
-                "0\n" +
+                "0\n" +   // Esbirro
+                "0\n" +   // Fortaleza
+                "0\n" +   // Debilidad
+                "0\n" +   // Armadura
+                "0\n" +   // Arma
+                "0\n" +   // Arma 2 (si lo pide)
                 "300\n";  // Edad
 
         withInput(respuestas, () -> {
@@ -161,11 +184,16 @@ public class VampireCharacterBuilderTest {
 
             Vampire result = builder.gameCharacterBuilder(new Vampire());
 
-            assertNotNull(result.getAbility());
+            // ASSERT: Habilidad
+            assertNotNull("La habilidad no puede ser nula", result.getAbility());
             assertTrue(
-                "La habilidad del Vampiro debe ser Discipline",
+                "La habilidad del Vampiro debe ser innegablemente Discipline",
                 result.getAbility() instanceof Discipline
             );
+            
+            // ASSERT: Comprobación de que no se ha equipado NADA extra (puros 0s)
+            assertTrue("Colección de armas debe estar vacía", result.getWeapon() == null || result.getWeapon().isEmpty());
+            assertTrue("Colección de armaduras debe estar vacía", result.getArmor() == null || result.getArmor().isEmpty());
         });
     }
 
@@ -194,13 +222,13 @@ public class VampireCharacterBuilderTest {
         String respuestas =
                 "Nosferatu\n" +
                 "5\n" +
-                "0\n" +
-                "0\n" +
-                "0\n" +
-                "0\n" +
+                "0\n" +   // Habilidad
+                "0\n" +   // Esbirro
+                "0\n" +   // Fortaleza
+                "0\n" +   // Debilidad
                 "1\n" +   // Armadura (elige una)
                 "1\n" +   // Arma principal
-                "0\n" +
+                "0\n" +   // Salir de armas
                 "999\n";  // Edad
 
         withInput(respuestas, () -> {
@@ -213,8 +241,16 @@ public class VampireCharacterBuilderTest {
 
             Vampire result = builder.gameCharacterBuilder(new Vampire());
 
-            assertNotNull(result.getArmor());
-            assertNotNull(result.getWeapon());
+            // ASSERT: Equipamiento asignado
+            assertNotNull("La colección de armaduras no debe ser nula", result.getArmor());
+            assertFalse("Debería tener al menos una armadura equipada", result.getArmor().isEmpty());
+            
+            assertNotNull("La colección de armas no debe ser nula", result.getWeapon());
+            assertFalse("Debería tener al menos un arma equipada", result.getWeapon().isEmpty());
+            
+            // ASSERT: Resto vacío
+            assertTrue("No debería tener fortalezas", result.getStrength() == null || result.getStrength().isEmpty());
+            assertTrue("No debería tener debilidades", result.getWeakness() == null || result.getWeakness().isEmpty());
         });
     }
 
@@ -264,7 +300,10 @@ public class VampireCharacterBuilderTest {
 
             Vampire result = builder.gameCharacterBuilder(new Vampire());
 
-            assertNotNull(result.getAbility());
+            // ASSERT: Validamos correcta asignación en el límite de la lista
+            assertNotNull("La habilidad debería haber sido asignada", result.getAbility());
+            assertTrue("El nombre debe coincidir", result.getName().equals("Blade"));
+            assertTrue("Su edad debe ser la introducida", result.getAge() == 45);
         });
     }
 }
